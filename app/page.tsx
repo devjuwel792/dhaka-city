@@ -1990,52 +1990,307 @@ export default function Home() {
           )}
 
           {/* ========================================== */}
-          {/* TAB 7: SETTINGS PLACEHOLDER */}
+          {/* TAB 7: SETTINGS FULL VIEW */}
           {/* ========================================== */}
           {activeTab === "settings" && (
-            <div className={`rounded-2xl border ${isDark ? "bg-[#1E1E1E] border-zinc-800" : "bg-white border-gray-200"} p-8 shadow-sm text-center max-w-md mx-auto space-y-6`}>
-              <Settings className="w-14 h-14 text-indigo-500 mx-auto animate-spin" style={{ animationDuration: '8s' }} />
-              <h3 className="text-xl font-extrabold">{t.settings}</h3>
-              <p className={isDark ? "text-gray-400" : "text-gray-600 text-[13px]"}>
-                Configure notifications threshold, regional updates, interface defaults, and account credentials.
-              </p>
-              <div className="border-t border-gray-50 dark:border-zinc-800 pt-4 flex flex-col gap-2.5">
-                <button className="w-full py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-lg transition-colors text-[13px]">
-                  Configure Dashboard
-                </button>
+            <div className="max-w-3xl mx-auto space-y-6">
+              <div className="flex items-center gap-3 mb-2">
+                <Settings className={`w-7 h-7 text-indigo-500 animate-spin`} style={{ animationDuration: '8s' }} />
+                <h2 className="text-2xl font-extrabold tracking-tight">{t.settings}</h2>
+              </div>
+
+              {/* General Settings */}
+              <div className={`rounded-2xl border ${isDark ? "bg-[#1E1E1E] border-zinc-800" : "bg-white border-gray-200"} p-6 shadow-sm space-y-5`}>
+                <h3 className="font-bold text-[15px] tracking-tight border-b pb-3 border-gray-100 dark:border-zinc-800">{t.settingsGeneral}</h3>
+
+                {/* Temperature Unit */}
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-semibold text-[14px]">{t.settingsUnits}</p>
+                    <p className={`text-[12px] mt-0.5 ${isDark ? "text-zinc-500" : "text-gray-400"}`}>Currently showing: °{tempUnit}</p>
+                  </div>
+                  <div className={`flex rounded-lg border overflow-hidden ${isDark ? "border-zinc-700" : "border-gray-200"}`}>
+                    {(["C", "F"] as const).map((unit) => (
+                      <button
+                        key={unit}
+                        onClick={() => setTempUnit(unit)}
+                        className={`px-4 py-1.5 text-[13px] font-bold transition-colors ${tempUnit === unit ? "bg-indigo-500 text-white" : isDark ? "bg-zinc-800 text-gray-400 hover:bg-zinc-700" : "bg-white text-gray-600 hover:bg-gray-50"}`}
+                      >
+                        °{unit}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Data Refresh Rate */}
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-semibold text-[14px]">{t.settingsRefresh}</p>
+                    <p className={`text-[12px] mt-0.5 ${isDark ? "text-zinc-500" : "text-gray-400"}`}>Every {refreshRate}s</p>
+                  </div>
+                  <div className={`flex rounded-lg border overflow-hidden ${isDark ? "border-zinc-700" : "border-gray-200"}`}>
+                    {[5, 10, 15, 30].map((r) => (
+                      <button
+                        key={r}
+                        onClick={() => setRefreshRate(r)}
+                        className={`px-3 py-1.5 text-[13px] font-bold transition-colors ${refreshRate === r ? "bg-indigo-500 text-white" : isDark ? "bg-zinc-800 text-gray-400 hover:bg-zinc-700" : "bg-white text-gray-600 hover:bg-gray-50"}`}
+                      >
+                        {r}s
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Theme */}
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-semibold text-[14px]">Theme</p>
+                    <p className={`text-[12px] mt-0.5 ${isDark ? "text-zinc-500" : "text-gray-400"}`}>{isDark ? "Dark Mode" : "Light Mode"}</p>
+                  </div>
+                  <button onClick={() => setIsDark(!isDark)} className={`relative inline-flex w-12 h-6 rounded-full transition-colors duration-300 ${isDark ? "bg-indigo-500" : "bg-gray-200"}`}>
+                    <span className={`inline-block w-5 h-5 rounded-full bg-white shadow-sm transform transition-transform duration-300 mt-0.5 ${isDark ? "translate-x-6" : "translate-x-0.5"}`} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Weather Settings */}
+              <div className={`rounded-2xl border ${isDark ? "bg-[#1E1E1E] border-zinc-800" : "bg-white border-gray-200"} p-6 shadow-sm space-y-5`}>
+                <h3 className="font-bold text-[15px] tracking-tight border-b pb-3 border-gray-100 dark:border-zinc-800">{t.settingsWeather}</h3>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-semibold text-[14px]">{t.settingsWeatherAlert}</p>
+                    <p className={`text-[12px] mt-0.5 ${isDark ? "text-zinc-500" : "text-gray-400"}`}>AQI, rain, and storm notifications</p>
+                  </div>
+                  <button onClick={() => setWeatherAlerts(!weatherAlerts)} className={`relative inline-flex w-12 h-6 rounded-full transition-colors duration-300 ${weatherAlerts ? "bg-emerald-500" : isDark ? "bg-zinc-700" : "bg-gray-200"}`}>
+                    <span className={`inline-block w-5 h-5 rounded-full bg-white shadow-sm transform transition-transform duration-300 mt-0.5 ${weatherAlerts ? "translate-x-6" : "translate-x-0.5"}`} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Transit Settings */}
+              <div className={`rounded-2xl border ${isDark ? "bg-[#1E1E1E] border-zinc-800" : "bg-white border-gray-200"} p-6 shadow-sm space-y-5`}>
+                <h3 className="font-bold text-[15px] tracking-tight border-b pb-3 border-gray-100 dark:border-zinc-800">{t.settingsTransit}</h3>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-semibold text-[14px]">Preferred Routes</p>
+                    <p className={`text-[12px] mt-0.5 ${isDark ? "text-zinc-500" : "text-gray-400"}`}>{t.settingsPrefRoutes}</p>
+                  </div>
+                  <button onClick={() => setPreferredRoutes(!preferredRoutes)} className={`relative inline-flex w-12 h-6 rounded-full transition-colors duration-300 ${preferredRoutes ? "bg-emerald-500" : isDark ? "bg-zinc-700" : "bg-gray-200"}`}>
+                    <span className={`inline-block w-5 h-5 rounded-full bg-white shadow-sm transform transition-transform duration-300 mt-0.5 ${preferredRoutes ? "translate-x-6" : "translate-x-0.5"}`} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Traffic Settings */}
+              <div className={`rounded-2xl border ${isDark ? "bg-[#1E1E1E] border-zinc-800" : "bg-white border-gray-200"} p-6 shadow-sm space-y-5`}>
+                <h3 className="font-bold text-[15px] tracking-tight border-b pb-3 border-gray-100 dark:border-zinc-800">{t.settingsTraffic}</h3>
+                <div className="flex items-center justify-between">
+                  <div><p className="font-semibold text-[14px]">{t.settingsTrafficAlert}</p></div>
+                  <button onClick={() => setTrafficAlerts(!trafficAlerts)} className={`relative inline-flex w-12 h-6 rounded-full transition-colors duration-300 ${trafficAlerts ? "bg-emerald-500" : isDark ? "bg-zinc-700" : "bg-gray-200"}`}>
+                    <span className={`inline-block w-5 h-5 rounded-full bg-white shadow-sm transform transition-transform duration-300 mt-0.5 ${trafficAlerts ? "translate-x-6" : "translate-x-0.5"}`} />
+                  </button>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div><p className="font-semibold text-[14px]">{t.settingsCongestionAlerts}</p></div>
+                  <button onClick={() => setCongestionAlerts(!congestionAlerts)} className={`relative inline-flex w-12 h-6 rounded-full transition-colors duration-300 ${congestionAlerts ? "bg-emerald-500" : isDark ? "bg-zinc-700" : "bg-gray-200"}`}>
+                    <span className={`inline-block w-5 h-5 rounded-full bg-white shadow-sm transform transition-transform duration-300 mt-0.5 ${congestionAlerts ? "translate-x-6" : "translate-x-0.5"}`} />
+                  </button>
+                </div>
+              </div>
+
+              {/* News Settings */}
+              <div className={`rounded-2xl border ${isDark ? "bg-[#1E1E1E] border-zinc-800" : "bg-white border-gray-200"} p-6 shadow-sm space-y-5`}>
+                <h3 className="font-bold text-[15px] tracking-tight border-b pb-3 border-gray-100 dark:border-zinc-800">{t.settingsNews}</h3>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-semibold text-[14px]">Customized News Sources</p>
+                    <p className={`text-[12px] mt-0.5 ${isDark ? "text-zinc-500" : "text-gray-400"}`}>{t.settingsNewsSources}</p>
+                  </div>
+                  <button onClick={() => setNewsSources(!newsSources)} className={`relative inline-flex w-12 h-6 rounded-full transition-colors duration-300 ${newsSources ? "bg-emerald-500" : isDark ? "bg-zinc-700" : "bg-gray-200"}`}>
+                    <span className={`inline-block w-5 h-5 rounded-full bg-white shadow-sm transform transition-transform duration-300 mt-0.5 ${newsSources ? "translate-x-6" : "translate-x-0.5"}`} />
+                  </button>
+                </div>
               </div>
             </div>
           )}
 
           {/* ========================================== */}
-          {/* TAB 8: SUPPORT PLACEHOLDER */}
+          {/* TAB 8: SUPPORT FULL VIEW */}
           {/* ========================================== */}
           {activeTab === "support" && (
-            <div className={`rounded-2xl border ${isDark ? "bg-[#1E1E1E] border-zinc-800" : "bg-white border-gray-200"} p-8 shadow-sm text-center max-w-md mx-auto space-y-6`}>
-              <HelpCircle className="w-14 h-14 text-indigo-500 mx-auto" />
-              <h3 className="text-xl font-extrabold">{t.support}</h3>
-              <p className={isDark ? "text-gray-400" : "text-gray-600 text-[13px]"}>
-                Have feedback or questions? Contact the Dhaka City Smart Portal administration or raise a ticket.
-              </p>
-              <div className="pt-4">
-                <button onClick={() => setShowEmergencyModal(true)} className="px-5 py-2.5 border border-red-500 text-red-500 font-bold rounded-full hover:bg-red-50 transition-colors text-[13px]">
-                  Emergency Support
-                </button>
+            <div className="max-w-3xl mx-auto space-y-6">
+              <div className="flex items-center gap-3 mb-2">
+                <HelpCircle className="w-7 h-7 text-indigo-500" />
+                <h2 className="text-2xl font-extrabold tracking-tight">{t.support}</h2>
+              </div>
+
+              {/* FAQs */}
+              <div className={`rounded-2xl border ${isDark ? "bg-[#1E1E1E] border-zinc-800" : "bg-white border-gray-200"} p-6 shadow-sm`}>
+                <h3 className="font-bold text-[15px] mb-4">{t.supportFaqs}</h3>
+                <div className="space-y-2">
+                  {[
+                    { id: "q1", q: t.faqQ1, a: t.faqA1 },
+                    { id: "q2", q: t.faqQ2, a: t.faqA2 },
+                    { id: "q3", q: t.faqQ3, a: t.faqA3 },
+                    { id: "q4", q: t.faqQ4, a: t.faqA4 },
+                    { id: "q5", q: t.faqQ5, a: t.faqA5 },
+                    { id: "q6", q: t.faqQ6, a: t.faqA6 },
+                    { id: "q7", q: t.faqQ7, a: t.faqA7 },
+                    { id: "q8", q: t.faqQ8, a: t.faqA8 },
+                    { id: "q9", q: t.faqQ9, a: t.faqA9 },
+                    { id: "q10", q: t.faqQ10, a: t.faqA10 },
+                  ].map((faq) => (
+                    <div key={faq.id} className={`rounded-xl border overflow-hidden ${isDark ? "border-zinc-800" : "border-gray-100"}`}>
+                      <button
+                        onClick={() => setOpenFaq(openFaq === faq.id ? null : faq.id)}
+                        className={`w-full text-left px-4 py-3 flex justify-between items-center font-semibold text-[13px] transition-colors ${isDark ? "hover:bg-zinc-800/60" : "hover:bg-gray-50"}`}
+                      >
+                        <span>{faq.q}</span>
+                        <ChevronRight className={`w-4 h-4 text-gray-400 transition-transform ${openFaq === faq.id ? "rotate-90" : ""}`} />
+                      </button>
+                      {openFaq === faq.id && (
+                        <div className={`px-4 pb-4 text-[13px] leading-6 ${isDark ? "text-gray-400 bg-zinc-800/20" : "text-gray-600 bg-gray-50/50"}`}>
+                          {faq.a}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Contact Form */}
+              <div className={`rounded-2xl border ${isDark ? "bg-[#1E1E1E] border-zinc-800" : "bg-white border-gray-200"} p-6 shadow-sm`}>
+                <h3 className="font-bold text-[15px] mb-4">{t.supportMessageUs}</h3>
+                <div className="space-y-3">
+                  <input
+                    value={contactName}
+                    onChange={(e) => setContactName(e.target.value)}
+                    placeholder="Your Name"
+                    className={`w-full px-4 py-2.5 rounded-xl border text-[13px] outline-none focus:ring-2 focus:ring-indigo-500/40 transition ${isDark ? "bg-zinc-800 border-zinc-700 text-gray-200 placeholder-zinc-500" : "bg-gray-50 border-gray-200 text-gray-800 placeholder-gray-400"}`}
+                  />
+                  <input
+                    value={contactEmail}
+                    onChange={(e) => setContactEmail(e.target.value)}
+                    placeholder="Email Address"
+                    type="email"
+                    className={`w-full px-4 py-2.5 rounded-xl border text-[13px] outline-none focus:ring-2 focus:ring-indigo-500/40 transition ${isDark ? "bg-zinc-800 border-zinc-700 text-gray-200 placeholder-zinc-500" : "bg-gray-50 border-gray-200 text-gray-800 placeholder-gray-400"}`}
+                  />
+                  <textarea
+                    value={contactMessage}
+                    onChange={(e) => setContactMessage(e.target.value)}
+                    placeholder={t.supportDescribe}
+                    rows={4}
+                    className={`w-full px-4 py-2.5 rounded-xl border text-[13px] outline-none focus:ring-2 focus:ring-indigo-500/40 transition resize-none ${isDark ? "bg-zinc-800 border-zinc-700 text-gray-200 placeholder-zinc-500" : "bg-gray-50 border-gray-200 text-gray-800 placeholder-gray-400"}`}
+                  />
+                  <button
+                    onClick={() => { alert(t.messageSent); setContactName(""); setContactEmail(""); setContactMessage(""); }}
+                    className="w-full py-2.5 bg-indigo-500 hover:bg-indigo-600 text-white font-bold rounded-xl transition-colors text-[13px]"
+                  >
+                    {t.supportSend}
+                  </button>
+                </div>
+              </div>
+
+              {/* Feedback Form */}
+              <div className={`rounded-2xl border ${isDark ? "bg-[#1E1E1E] border-zinc-800" : "bg-white border-gray-200"} p-6 shadow-sm`}>
+                <h3 className="font-bold text-[15px] mb-1">{t.supportFeedbackTitle}</h3>
+                <p className={`text-[12px] mb-4 ${isDark ? "text-zinc-500" : "text-gray-400"}`}>{t.supportFeedbackDesc}</p>
+                <div className="space-y-3">
+                  <input
+                    value={feedbackSubject}
+                    onChange={(e) => setFeedbackSubject(e.target.value)}
+                    placeholder={t.supportSubject}
+                    className={`w-full px-4 py-2.5 rounded-xl border text-[13px] outline-none focus:ring-2 focus:ring-emerald-500/40 transition ${isDark ? "bg-zinc-800 border-zinc-700 text-gray-200 placeholder-zinc-500" : "bg-gray-50 border-gray-200 text-gray-800 placeholder-gray-400"}`}
+                  />
+                  <textarea
+                    value={feedbackDesc}
+                    onChange={(e) => setFeedbackDesc(e.target.value)}
+                    placeholder={t.supportDescribe}
+                    rows={4}
+                    className={`w-full px-4 py-2.5 rounded-xl border text-[13px] outline-none focus:ring-2 focus:ring-emerald-500/40 transition resize-none ${isDark ? "bg-zinc-800 border-zinc-700 text-gray-200 placeholder-zinc-500" : "bg-gray-50 border-gray-200 text-gray-800 placeholder-gray-400"}`}
+                  />
+                  <div className={`flex items-center gap-3 px-4 py-2.5 rounded-xl border cursor-pointer transition ${isDark ? "bg-zinc-800 border-zinc-700" : "bg-gray-50 border-gray-200"}`} onClick={() => fileInputRef.current?.click()}>
+                    <span className={`text-[13px] ${isDark ? "text-zinc-400" : "text-gray-500"}`}>{selectedFile ? selectedFile.name : t.supportUpload}</span>
+                    <input ref={fileInputRef} type="file" className="hidden" onChange={(e) => setSelectedFile(e.target.files?.[0] || null)} />
+                  </div>
+                  <button
+                    onClick={() => { alert(t.feedbackSent); setFeedbackSubject(""); setFeedbackDesc(""); setSelectedFile(null); }}
+                    className="w-full py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl transition-colors text-[13px]"
+                  >
+                    {t.supportSubmitFeedback}
+                  </button>
+                </div>
+              </div>
+
+              {/* Contact Info */}
+              <div className={`rounded-2xl border ${isDark ? "bg-[#1E1E1E] border-zinc-800" : "bg-white border-gray-200"} p-6 shadow-sm`}>
+                <h3 className="font-bold text-[15px] mb-2">{t.supportContactInfo}</h3>
+                <p className={`text-[13px] ${isDark ? "text-gray-400" : "text-gray-600"}`}>{t.contactDetails}</p>
               </div>
             </div>
           )}
 
           {/* ========================================== */}
-          {/* TAB 9: ABOUT PLACEHOLDER */}
+          {/* TAB 9: ABOUT FULL VIEW */}
           {/* ========================================== */}
           {activeTab === "about" && (
-            <div className={`rounded-2xl border ${isDark ? "bg-[#1E1E1E] border-zinc-800" : "bg-white border-gray-200"} p-8 shadow-sm text-center max-w-md mx-auto space-y-6`}>
-              <Info className="w-14 h-14 text-[#78D47E] mx-auto" />
-              <h3 className="text-xl font-extrabold">{t.about}</h3>
-              <p className={isDark ? "text-gray-400" : "text-gray-600 text-[13px] leading-6"}>
-                Dhaka City Smart Portal is a modern real-time transit status, climate monitoring, and public notification system designed to streamline urban transit and citizen communications.
-              </p>
-              <p className="text-[11px] text-gray-400">Version 1.2.0 • build 2026</p>
+            <div className="max-w-3xl mx-auto space-y-6">
+              <div className="flex items-center gap-3 mb-2">
+                <Info className="w-7 h-7 text-[#78D47E]" />
+                <h2 className="text-2xl font-extrabold tracking-tight">{t.aboutTitle}</h2>
+              </div>
+
+              {/* Hero Banner */}
+              <div className="rounded-2xl overflow-hidden relative min-h-[140px] flex items-center p-8 bg-gradient-to-br from-[#1E293B] via-[#0F172A] to-zinc-950 text-white shadow-md">
+                <div className="absolute -right-10 -top-10 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl" />
+                <div className="z-10">
+                  <p className="text-emerald-400 font-bold text-xs uppercase tracking-widest mb-2">UIUXpert Lab · Version 1.2.0 · 2026</p>
+                  <h3 className="text-3xl font-black tracking-tight leading-tight">Dhaka City<br/><span className="text-[#78D47E]">Smart Dashboard</span></h3>
+                </div>
+              </div>
+
+              {/* Mission */}
+              <div className={`rounded-2xl border ${isDark ? "bg-[#1E1E1E] border-zinc-800" : "bg-white border-gray-200"} p-6 shadow-sm`}>
+                <h3 className="font-bold text-[15px] mb-3 text-emerald-500">{t.ourMission}</h3>
+                <p className={`text-[13px] leading-7 ${isDark ? "text-gray-300" : "text-gray-600"}`}>{t.missionContent}</p>
+              </div>
+
+              {/* Data Sources */}
+              <div className={`rounded-2xl border ${isDark ? "bg-[#1E1E1E] border-zinc-800" : "bg-white border-gray-200"} p-6 shadow-sm`}>
+                <h3 className="font-bold text-[15px] mb-1 text-indigo-500">{t.dataSources}</h3>
+                <p className={`text-[13px] mb-3 ${isDark ? "text-gray-400" : "text-gray-500"}`}>{t.dataSourcesContent}</p>
+                <ul className="space-y-2">
+                  {[t.ds1, t.ds2, t.ds3, t.ds4, t.ds5, t.ds6].map((src, i) => (
+                    <li key={i} className={`flex items-start gap-2 text-[13px] ${isDark ? "text-gray-300" : "text-gray-700"}`}>
+                      <span className="mt-1.5 w-2 h-2 rounded-full bg-indigo-500 flex-shrink-0" />
+                      {src}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Team */}
+              <div className={`rounded-2xl border ${isDark ? "bg-[#1E1E1E] border-zinc-800" : "bg-white border-gray-200"} p-6 shadow-sm`}>
+                <h3 className="font-bold text-[15px] mb-3 text-amber-500">{t.theTeam}</h3>
+                <p className={`text-[13px] mb-4 ${isDark ? "text-gray-400" : "text-gray-500"}`}>{t.theTeamContent}</p>
+                <div className="space-y-4">
+                  {[
+                    { bio: t.farhanaBio, initials: "FK", color: "bg-emerald-500" },
+                    { bio: t.mushfiqurBio, initials: "MS", color: "bg-indigo-500" },
+                  ].map((member, i) => (
+                    <div key={i} className={`flex items-start gap-4 p-4 rounded-xl border ${isDark ? "border-zinc-800 bg-zinc-800/20" : "border-gray-100 bg-gray-50/50"}`}>
+                      <div className={`w-10 h-10 rounded-full ${member.color} flex items-center justify-center text-white font-extrabold text-sm flex-shrink-0`}>{member.initials}</div>
+                      <p className={`text-[13px] leading-6 ${isDark ? "text-gray-300" : "text-gray-600"}`}>{member.bio}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Contact */}
+              <div className={`rounded-2xl border ${isDark ? "bg-[#1E1E1E] border-zinc-800" : "bg-white border-gray-200"} p-6 shadow-sm`}>
+                <h3 className="font-bold text-[15px] mb-2 text-sky-500">{t.contactUs}</h3>
+                <p className={`text-[13px] ${isDark ? "text-gray-400" : "text-gray-600"}`}>{t.contactDetails}</p>
+              </div>
             </div>
           )}
 
