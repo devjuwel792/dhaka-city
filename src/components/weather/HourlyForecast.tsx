@@ -2,8 +2,8 @@
 
 import { Droplets, AlertCircle } from "lucide-react";
 import { useApp } from "@/context/AppContext";
-import { conditionFromCode, iconForCondition } from "@/utils/weather";
 import { formatHourLabel } from "@/utils/datetime";
+import { WeatherIcon } from "./WeatherIcon";
 import { cn } from "@/utils/cn";
 
 export function HourlyForecast() {
@@ -47,7 +47,6 @@ export function HourlyForecast() {
       <h3 className="font-bold text-[15px] tracking-tight mb-4">{t.hourlyForecast}</h3>
       <div className="grid grid-cols-4 gap-4">
         {upcoming.map((hr, i) => {
-          const Icon = iconForCondition(conditionFromCode(hr.weatherCode), true);
           return (
             <div
               key={i}
@@ -57,7 +56,7 @@ export function HourlyForecast() {
               )}
             >
               <span className="text-[12px] font-extrabold text-gray-400">{formatHourLabel(hr.time)}</span>
-              <Icon className="w-8 h-8 text-sky-400" />
+              <WeatherIcon code={hr.weatherCode} isDay={true} className="w-8 h-8 text-sky-400" />
               <span className="text-xl font-bold">{formatTempNum(hr.temperature)}</span>
               <span className="flex items-center gap-1 justify-center text-[11px] text-gray-500 font-sans">
                 <Droplets className="w-3 h-3 text-sky-400" /> {hr.precipitationProbability}%

@@ -5,7 +5,7 @@ import { cn } from "@/utils/cn";
 
 interface DataFreshnessProps {
   /** When the data was last refreshed. */
-  updatedAt?: Date | number | null;
+  updatedAt?: Date | number | string | null;
   /** Auto-refresh cadence in seconds (used when no updatedAt is given). */
   refreshRate?: number;
   className?: string;
@@ -30,8 +30,14 @@ export function DataFreshness({ updatedAt, refreshRate, className }: DataFreshne
 
   let text: string;
   if (updatedAt != null) {
-    const ts = updatedAt instanceof Date ? updatedAt.getTime() : updatedAt;
-    text = relativeLabel(Math.max(0, Math.round((now - ts) / 1000)));
+    const ts =
+      updatedAt instanceof Date
+        ? updatedAt.getTime()
+        : typeof updatedAt === "string"
+          ? new Date(updatedAt).getTime()
+          : updatedAt;
+    const seconds = Number.isFinite(ts) ? Math.max(0, Math.round((now - ts) / 1000)) : 0;
+    text = relativeLabel(seconds);
   } else if (refreshRate != null) {
     text = `Auto-refresh: every ${refreshRate}s`;
   } else {

@@ -70,6 +70,7 @@ export function useWeatherFeed(location: string): WeatherState {
 
   useEffect(() => {
     const controller = new AbortController();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     load(controller.signal);
     const interval = setInterval(() => load(controller.signal), WEATHER_REFRESH_MS);
     return () => {

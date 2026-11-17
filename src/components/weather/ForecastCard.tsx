@@ -2,8 +2,8 @@
 
 import { ChevronLeft, ChevronRight, AlertCircle } from "lucide-react";
 import { useApp } from "@/context/AppContext";
-import { conditionFromCode, iconForCondition } from "@/utils/weather";
 import { formatWeekday } from "@/utils/datetime";
+import { WeatherIcon } from "./WeatherIcon";
 import { cn } from "@/utils/cn";
 
 /** Seven-day forecast grid, driven by the live Open-Meteo feed. */
@@ -69,7 +69,6 @@ export function ForecastCard({ className }: { className?: string }) {
 
       <div className="grid grid-cols-4 md:grid-cols-7 gap-2">
         {days.map((day, i) => {
-          const Icon = iconForCondition(conditionFromCode(day.weatherCode), true);
           return (
             <div
               key={i}
@@ -81,7 +80,7 @@ export function ForecastCard({ className }: { className?: string }) {
               <span className="text-[11px] font-bold text-gray-400 block">
                 {i === 0 ? t.today : formatWeekday(day.date, lang)}
               </span>
-              <Icon className="w-6 h-6 text-sky-400 my-1.5" />
+              <WeatherIcon code={day.weatherCode} isDay={true} className="w-6 h-6 text-sky-400 my-1.5" />
               <span className="text-[14px] font-bold">{formatTempNum(day.tempMax)}</span>
               <span className="text-[11px] font-semibold text-gray-400">
                 {t.min} {formatTempNum(day.tempMin)}

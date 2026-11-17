@@ -2,12 +2,8 @@
 
 import { Wind, Droplets, AlertCircle } from "lucide-react";
 import { useApp } from "@/context/AppContext";
-import {
-  conditionFromCode,
-  iconForCondition,
-  conditionLabelKey,
-  degreesToCompass,
-} from "@/utils/weather";
+import { conditionFromCode, conditionLabelKey, degreesToCompass } from "@/utils/weather";
+import { WeatherIcon } from "./WeatherIcon";
 import { cn } from "@/utils/cn";
 
 interface TodayWeatherCardProps {
@@ -44,7 +40,6 @@ export function TodayWeatherCard({ variant = "dashboard", className }: TodayWeat
 
   const cur = weather.data.current;
   const condition = conditionFromCode(cur.weatherCode);
-  const Icon = iconForCondition(condition, cur.isDay);
   const label = t[conditionLabelKey(condition)] ?? t.weatherCloudy;
   const windDir = degreesToCompass(cur.windDirection);
 
@@ -70,7 +65,11 @@ export function TodayWeatherCard({ variant = "dashboard", className }: TodayWeat
             {t.feelsLikeShort} {formatTemp(cur.apparentTemperature)}
           </p>
         </div>
-        <Icon className={cn(isWeather ? "w-20 h-20" : "w-16 h-16", "text-sky-400")} />
+        <WeatherIcon
+          code={cur.weatherCode}
+          isDay={cur.isDay}
+          className={cn(isWeather ? "w-20 h-20" : "w-16 h-16", "text-sky-400")}
+        />
       </div>
 
       <div className="z-10 pt-8 border-t border-white/10 grid grid-cols-2 gap-4">

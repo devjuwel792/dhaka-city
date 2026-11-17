@@ -3,7 +3,6 @@
 import { Plus, Minus, AlertCircle } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { degreesToCompass } from "@/utils/weather";
-import { cn } from "@/utils/cn";
 
 export function WeatherDetails() {
   const { isDark, t, location, weather, formatTemp, formatTempNum } = useApp();
