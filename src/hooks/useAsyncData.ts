@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type DependencyList } from "react";
+import { useEffect, useState, type DependencyList } from "react";
 
 export interface AsyncState<T> {
   data: T;
@@ -19,15 +19,13 @@ export function useAsyncData<T>(
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  const fetcherRef = useRef(fetcher);
-  fetcherRef.current = fetcher;
-
   useEffect(() => {
     let active = true;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
     setError(null);
-    fetcherRef
-      .current()
+
+    fetcher()
       .then((result) => {
         if (active) setData(result);
       })
@@ -37,6 +35,7 @@ export function useAsyncData<T>(
       .finally(() => {
         if (active) setLoading(false);
       });
+
     return () => {
       active = false;
     };
