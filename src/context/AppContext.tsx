@@ -12,6 +12,7 @@ import { translations } from "@/constants/translations";
 import { APP_CONFIG } from "@/config";
 import { useRefreshTrigger } from "@/hooks/useRefreshTrigger";
 import { useCitySnapshot } from "@/hooks/useCitySnapshot";
+import { useWeatherFeed, type WeatherState } from "@/hooks/useWeatherFeed";
 import {
   formatTemp as formatTempUtil,
   formatTempFull as formatTempFullUtil,
@@ -65,6 +66,7 @@ interface AppContextValue {
   t: Translations;
   snapshot: CitySnapshot;
   refreshTrigger: number;
+  weather: WeatherState;
 
   // temperature helpers (unit-aware)
   formatTemp: (celsius: number) => string;
@@ -97,6 +99,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const refreshTrigger = useRefreshTrigger(refreshRate);
   const { data: snapshot } = useCitySnapshot(location, refreshTrigger);
+  const weather = useWeatherFeed(location);
 
   const t = translations[lang];
 
@@ -141,6 +144,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       t,
       snapshot,
       refreshTrigger,
+      weather,
       formatTemp: (celsius: number) => formatTempUtil(celsius, tempUnit),
       formatTempFull: (celsius: number) => formatTempFullUtil(celsius, tempUnit),
       formatTempNum: (celsius: number) => formatTempNumUtil(celsius, tempUnit),
@@ -166,6 +170,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       t,
       snapshot,
       refreshTrigger,
+      weather,
     ],
   );
 

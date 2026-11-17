@@ -4,6 +4,7 @@ import { useApp } from "@/context/AppContext";
 import { cameraFeeds } from "@/data/cameras";
 import { TodayWeatherCard } from "@/components/weather/TodayWeatherCard";
 import { ForecastCard } from "@/components/weather/ForecastCard";
+import { WeatherMeta } from "@/components/weather/WeatherMeta";
 import { StreetMapWidget } from "./StreetMapWidget";
 import { AirPollutionCard } from "./AirPollutionCard";
 import { RidesCard } from "./RidesCard";
@@ -23,6 +24,8 @@ export function DashboardView() {
           <TodayWeatherCard variant="dashboard" className="md:col-span-5" />
           <ForecastCard className="md:col-span-7" />
         </div>
+
+        <WeatherMeta className="-mt-4" />
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
           <StreetMapWidget className="md:col-span-4" />

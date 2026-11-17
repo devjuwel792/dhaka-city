@@ -28,9 +28,16 @@ export {
 export {
   getWeather,
   getAirQuality,
+  getWeatherBundle,
   validateWeather,
   validateAirQuality,
+  normalizeWeatherBundle,
+  WEATHER_REFRESH_MS,
   type OpenMeteoWeather,
   type OpenMeteoAirQuality,
   type OpenMeteoOptions,
+  type WeatherBundle,
+  type WeatherBundleCurrent,
+  type WeatherBundleHourly,
+  type WeatherBundleDaily,
 } from "./openMeteo";

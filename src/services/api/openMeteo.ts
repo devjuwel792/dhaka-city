@@ -5,6 +5,7 @@ import {
   assertRecord,
   isFiniteNumber,
   isFiniteNumberArray,
+  isRecord,
   isString,
   isStringArray,
   ValidationError,
@@ -161,6 +162,152 @@ export function getAirQuality(
     source: API_ENDPOINTS.openMeteo.source,
     validate: validateAirQuality,
     ttlMs: options.ttlMs ?? AIR_QUALITY_TTL,
+    retries: options.retries,
+    timeoutMs: options.timeoutMs,
+    signal: options.signal,
+  });
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+// Full weather bundle (all dashboard fields), timezone Asia/Dhaka, 7-day.
+// ───────────────────────────────────────────────────────────────────────────
+
+export interface WeatherBundleCurrent {
+  time: string;
+  temperature: number;
+  apparentTemperature: number;
+  humidity: number;
+  windSpeed: number;
+  windDirection: number;
+  precipitation: number;
+  weatherCode: number;
+  cloudCover: number;
+  uvIndex: number;
+  visibility: number; // meters
+  isDay: boolean;
+}
+
+export interface WeatherBundleHourly {
+  time: string;
+  temperature: number;
+  precipitationProbability: number;
+  weatherCode: number;
+}
+
+export interface WeatherBundleDaily {
+  date: string;
+  weatherCode: number;
+  tempMax: number;
+  tempMin: number;
+  sunrise: string;
+  sunset: string;
+  uvIndexMax: number;
+  precipitationProbabilityMax: number;
+}
+
+export interface WeatherBundle {
+  current: WeatherBundleCurrent;
+  hourly: WeatherBundleHourly[];
+  daily: WeatherBundleDaily[];
+}
+
+const num = (value: unknown, fallback = 0): number =>
+  isFiniteNumber(value) ? value : fallback;
+
+export function normalizeWeatherBundle(raw: unknown): WeatherBundle {
+  const root = assertRecord(raw, "root");
+  const current = assertRecord(root.current, "current");
+
+  if (!isFiniteNumber(current.temperature_2m)) {
+    throw new ValidationError("current.temperature_2m is missing");
+  }
+
+  const hourlyObj = isRecord(root.hourly) ? root.hourly : {};
+  const hTimes = isStringArray(hourlyObj.time) ? hourlyObj.time : [];
+  const hTemps = isFiniteNumberArray(hourlyObj.temperature_2m) ? hourlyObj.temperature_2m : [];
+  const hPops = isFiniteNumberArray(hourlyObj.precipitation_probability)
+    ? hourlyObj.precipitation_probability
+    : [];
+  const hCodes = isFiniteNumberArray(hourlyObj.weather_code) ? hourlyObj.weather_code : [];
+  const hVis = isFiniteNumberArray(hourlyObj.visibility) ? hourlyObj.visibility : [];
+  const hUv = isFiniteNumberArray(hourlyObj.uv_index) ? hourlyObj.uv_index : [];
+
+  const currentTime = isString(current.time) ? current.time : "";
+  let idx = hTimes.findIndex((t) => t >= currentTime);
+  if (idx < 0) idx = 0;
+
+  const currentBlock: WeatherBundleCurrent = {
+    time: currentTime,
+    temperature: num(current.temperature_2m),
+    apparentTemperature: num(current.apparent_temperature, num(current.temperature_2m)),
+    humidity: num(current.relative_humidity_2m),
+    windSpeed: num(current.wind_speed_10m),
+    windDirection: num(current.wind_direction_10m),
+    precipitation: num(current.precipitation),
+    weatherCode: num(current.weather_code),
+    cloudCover: num(current.cloud_cover),
+    uvIndex: idx >= 0 && idx < hUv.length ? hUv[idx] : 0,
+    visibility: idx >= 0 && idx < hVis.length ? hVis[idx] : 0,
+    isDay: current.is_day === 1,
+  };
+
+  const hourly: WeatherBundleHourly[] = hTimes.map((time, i) => ({
+    time,
+    temperature: hTemps[i] ?? 0,
+    precipitationProbability: hPops[i] ?? 0,
+    weatherCode: hCodes[i] ?? 0,
+  }));
+
+  const dailyObj = isRecord(root.daily) ? root.daily : {};
+  const dTimes = isStringArray(dailyObj.time) ? dailyObj.time : [];
+  const dCodes = isFiniteNumberArray(dailyObj.weather_code) ? dailyObj.weather_code : [];
+  const dMax = isFiniteNumberArray(dailyObj.temperature_2m_max) ? dailyObj.temperature_2m_max : [];
+  const dMin = isFiniteNumberArray(dailyObj.temperature_2m_min) ? dailyObj.temperature_2m_min : [];
+  const dSunrise = isStringArray(dailyObj.sunrise) ? dailyObj.sunrise : [];
+  const dSunset = isStringArray(dailyObj.sunset) ? dailyObj.sunset : [];
+  const dUv = isFiniteNumberArray(dailyObj.uv_index_max) ? dailyObj.uv_index_max : [];
+  const dPop = isFiniteNumberArray(dailyObj.precipitation_probability_max)
+    ? dailyObj.precipitation_probability_max
+    : [];
+
+  const daily: WeatherBundleDaily[] = dTimes.map((date, i) => ({
+    date,
+    weatherCode: dCodes[i] ?? 0,
+    tempMax: dMax[i] ?? 0,
+    tempMin: dMin[i] ?? 0,
+    sunrise: dSunrise[i] ?? "",
+    sunset: dSunset[i] ?? "",
+    uvIndexMax: dUv[i] ?? 0,
+    precipitationProbabilityMax: dPop[i] ?? 0,
+  }));
+
+  return { current: currentBlock, hourly, daily };
+}
+
+export const WEATHER_REFRESH_MS = 10 * 60 * 1000; // 10 minutes
+
+export function getWeatherBundle(
+  lat: number = DHAKA_COORDS.lat,
+  lon: number = DHAKA_COORDS.lon,
+  options: OpenMeteoOptions = {},
+): Promise<ApiResponse<WeatherBundle>> {
+  const params = new URLSearchParams({
+    latitude: String(lat),
+    longitude: String(lon),
+    current:
+      "temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m",
+    hourly: "temperature_2m,precipitation_probability,weather_code,visibility,uv_index",
+    daily:
+      "weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max",
+    timezone: "Asia/Dhaka",
+    forecast_days: "7",
+  });
+
+  return request<WeatherBundle>({
+    url: `${API_ENDPOINTS.openMeteo.weather}?${params.toString()}`,
+    source: API_ENDPOINTS.openMeteo.source,
+    validate: normalizeWeatherBundle,
+    ttlMs: options.ttlMs ?? WEATHER_TTL,
     retries: options.retries,
     timeoutMs: options.timeoutMs,
     signal: options.signal,

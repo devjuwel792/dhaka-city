@@ -1,44 +1,67 @@
 "use client";
 
-import { Droplets, Wind } from "lucide-react";
+import { Droplets, AlertCircle } from "lucide-react";
 import { useApp } from "@/context/AppContext";
-import { hourlyForecast } from "@/data/weather";
+import { conditionFromCode, iconForCondition } from "@/utils/weather";
+import { formatHourLabel } from "@/utils/datetime";
+import { cn } from "@/utils/cn";
 
 export function HourlyForecast() {
-  const { isDark, t } = useApp();
+  const { isDark, t, weather, formatTempNum } = useApp();
+
+  const card = cn(
+    "rounded-2xl border p-6 shadow-sm",
+    isDark ? "border-zinc-800 bg-[#1E1E1E]" : "border-gray-200 bg-white",
+  );
+
+  if (!weather.data) {
+    if (weather.loading) {
+      return (
+        <div className={card}>
+          <div className="h-4 w-32 bg-gray-200 dark:bg-zinc-800 rounded animate-pulse mb-4" />
+          <div className="grid grid-cols-4 gap-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="h-28 rounded-xl bg-gray-100 dark:bg-zinc-800/30 animate-pulse" />
+            ))}
+          </div>
+        </div>
+      );
+    }
+    return (
+      <div className={cn(card, "flex items-center justify-center gap-2 py-8")}>
+        <AlertCircle className="w-6 h-6 text-red-500" />
+        <span className="text-[13px] text-gray-400">{t.weatherUnavailable}</span>
+      </div>
+    );
+  }
+
+  const { hourly, current } = weather.data;
+  const startIdx = Math.max(
+    0,
+    hourly.findIndex((h) => h.time >= current.time),
+  );
+  const upcoming = hourly.slice(startIdx, startIdx + 8);
 
   return (
-    <div
-      className={
-        isDark
-          ? "rounded-2xl border border-zinc-800 bg-[#1E1E1E] p-6 shadow-sm"
-          : "rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
-      }
-    >
+    <div className={card}>
       <h3 className="font-bold text-[15px] tracking-tight mb-4">{t.hourlyForecast}</h3>
       <div className="grid grid-cols-4 gap-4">
-        {hourlyForecast.map((hr, idx) => {
-          const Icon = hr.icon;
+        {upcoming.map((hr, i) => {
+          const Icon = iconForCondition(conditionFromCode(hr.weatherCode), true);
           return (
             <div
-              key={idx}
-              className={
-                isDark
-                  ? "p-4 rounded-xl border border-zinc-850 bg-zinc-900/10 flex flex-col justify-between items-center text-center space-y-2"
-                  : "p-4 rounded-xl border border-gray-100 bg-gray-50/20 flex flex-col justify-between items-center text-center space-y-2"
-              }
+              key={i}
+              className={cn(
+                "p-4 rounded-xl border flex flex-col justify-between items-center text-center space-y-2",
+                isDark ? "border-zinc-850 bg-zinc-900/10" : "border-gray-100 bg-gray-50/20",
+              )}
             >
-              <span className="text-[12px] font-extrabold text-gray-400">{hr.time}</span>
-              <Icon className={`w-8 h-8 ${hr.color} animate-pulse`} />
-              <span className="text-xl font-bold">{hr.temp}</span>
-              <div className="flex flex-col gap-0.5 text-[11px] text-gray-500 mt-1">
-                <span className="flex items-center gap-1 justify-center font-sans">
-                  <Droplets className="w-3 h-3 text-sky-400" /> {hr.hum}
-                </span>
-                <span className="flex items-center gap-1 justify-center font-sans">
-                  <Wind className="w-3 h-3 text-sky-400" /> {hr.wind}
-                </span>
-              </div>
+              <span className="text-[12px] font-extrabold text-gray-400">{formatHourLabel(hr.time)}</span>
+              <Icon className="w-8 h-8 text-sky-400" />
+              <span className="text-xl font-bold">{formatTempNum(hr.temperature)}</span>
+              <span className="flex items-center gap-1 justify-center text-[11px] text-gray-500 font-sans">
+                <Droplets className="w-3 h-3 text-sky-400" /> {hr.precipitationProbability}%
+              </span>
             </div>
           );
         })}

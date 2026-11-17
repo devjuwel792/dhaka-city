@@ -1,0 +1,91 @@
+"use client";
+
+import { useCallback, useEffect, useState } from "react";
+import type { ApiErrorInfo, ApiSource } from "@/types/api";
+import type { WeatherBundle } from "@/services/api";
+import { getWeatherBundle, WEATHER_REFRESH_MS } from "@/services/api";
+import { getLocationCoords } from "@/config/locations";
+
+export interface WeatherState {
+  data: WeatherBundle | null;
+  loading: boolean;
+  error: ApiErrorInfo | null;
+  fetchedAt: string | null;
+  source: ApiSource | null;
+  isDemo: boolean;
+}
+
+interface RawWeather {
+  loc: string;
+  data: WeatherBundle;
+  fetchedAt: string | null;
+  source: ApiSource | null;
+  isDemo: boolean;
+}
+
+/**
+ * Fetches Open-Meteo weather for a location, refreshing on an interval.
+ * - Preserves the previous valid payload when a refresh fails (same location).
+ * - Avoids showing another location's data after a location switch.
+ * - Aborts in-flight requests on unmount / location change.
+ */
+export function useWeatherFeed(location: string): WeatherState {
+  const [raw, setRaw] = useState<RawWeather | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<ApiErrorInfo | null>(null);
+
+  const load = useCallback(
+    (signal: AbortSignal) => {
+      const { lat, lon } = getLocationCoords(location);
+      setLoading(true);
+      setError(null);
+
+      getWeatherBundle(lat, lon, { signal })
+        .then((res) => {
+          if (signal.aborted) return;
+          if (res.data) {
+            setRaw({
+              loc: location,
+              data: res.data,
+              fetchedAt: res.fetchedAt,
+              source: res.source,
+              isDemo: res.isDemo,
+            });
+          }
+          // On failure, keep the previous payload (preserve valid data) and
+          // surface the error. If the location changed, `data` derives to null.
+          setError(res.error);
+        })
+        .catch(() => {
+          if (!signal.aborted) {
+            setError({ type: "network", message: "Unexpected error", retryable: true });
+          }
+        })
+        .finally(() => {
+          if (!signal.aborted) setLoading(false);
+        });
+    },
+    [location],
+  );
+
+  useEffect(() => {
+    const controller = new AbortController();
+    load(controller.signal);
+    const interval = setInterval(() => load(controller.signal), WEATHER_REFRESH_MS);
+    return () => {
+      controller.abort();
+      clearInterval(interval);
+    };
+  }, [load]);
+
+  const isCurrent = raw !== null && raw.loc === location;
+
+  return {
+    data: isCurrent ? raw!.data : null,
+    loading,
+    error,
+    fetchedAt: isCurrent ? raw!.fetchedAt : null,
+    source: isCurrent ? raw!.source : null,
+    isDemo: isCurrent ? raw!.isDemo : false,
+  };
+}
