@@ -8,6 +8,10 @@ import { SunCycleCard } from "./SunCycleCard";
 import { WaterloggingRiskCard } from "./WaterloggingRiskCard";
 import { WeatherMeta } from "./WeatherMeta";
 import { AirQualityCard } from "@/components/air-quality/AirQualityCard";
+import { PollutantBreakdown } from "@/components/air-quality/PollutantBreakdown";
+import { AqiTrendChart } from "@/components/air-quality/AqiTrendChart";
+import { AirQualityForecast } from "@/components/air-quality/AirQualityForecast";
+import { AirQualityMeta } from "@/components/air-quality/AirQualityMeta";
 
 export function WeatherView() {
   return (
@@ -24,12 +28,17 @@ export function WeatherView() {
           <HourlyForecast />
 
           <WeatherDetails />
+
+          <AqiTrendChart />
+          <AirQualityForecast />
         </div>
 
         <div className="xl:col-span-4 space-y-8">
           <SunCycleCard />
           <WaterloggingRiskCard />
           <AirQualityCard />
+          <AirQualityMeta />
+          <PollutantBreakdown />
         </div>
       </div>
     </div>

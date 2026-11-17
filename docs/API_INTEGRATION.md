@@ -56,8 +56,13 @@ src/
     validators.ts         # Runtime type guards + ValidationError
     openMeteo.ts          # Real key-less public API modules (weather, air quality)
     index.ts              # Barrel exports (mock services + foundation)
-  hooks/
-    useApiResource.ts     # React hook: runs a request with AbortController cancellation
+   hooks/
+     useApiResource.ts     # React hook: runs a request with AbortController cancellation
+     useWeatherFeed.ts     # Weather screen/dashboard feed (10-min refresh, abort, keep-last-good)
+     useAirQualityFeed.ts  # Air-quality feed (30-min refresh, abort, keep-last-good)
+   utils/
+     weather.ts            # WMO code → condition/icon/label, compass
+     airQuality.ts         # US/EEA AQI bands, guidance keys, pollutant metadata, chart helpers
 ```
 
 The pre-existing mock services (`weather.ts`, `transit.ts`, `news.ts`, `cameras.ts`, `client.ts`) are untouched and still power the dashboard. The new foundation is **additive** and ready to be adopted per-view.
@@ -121,20 +126,29 @@ Only **public, key-less, CORS-enabled** APIs are integrated. Browser `fetch()` c
   - No historical archive beyond the free allowance.
   - Availability/accuracy can change; always display `fetchedAt` + attribution.
 
-### ৬.২ Open-Meteo — Air Quality (`getAirQuality`)
+### ৬.২ Open-Meteo — Air Quality (`getAirQuality`, `getAirQualityBundle`)
 
 - **Endpoint:** `https://air-quality-api.open-meteo.com/v1/air-quality`
 - **Docs:** https://open-meteo.com/en/docs/air-quality-api
 - **Auth:** none (free tier, no key)
 - **CORS:** ✅ Fully supported — browser-safe.
-- **License / attribution:** CC BY 4.0 — "Weather data by Open-Meteo.com".
-- **Params used:** `current=european_aqi,us_aqi,pm2_5,pm10,nitrogen_dioxide,ozone,sulphur_dioxide`, `timezone=auto`.
-- **Returns:** `ApiResponse<OpenMeteoAirQuality>`.
-- **Rate limits:** same free-tier family as the weather API (approximate).
+- **License / attribution:** CC BY 4.0 — "Weather data by Open-Meteo.com"; CAMS data must also credit the [CAMS ENSEMBLE data provider](https://atmosphere.copernicus.eu/).
+- **Params used (bundle):**
+  - `current=european_aqi,us_aqi,us_aqi_pm2_5,us_aqi_pm10,us_aqi_nitrogen_dioxide,us_aqi_ozone,us_aqi_sulphur_dioxide,us_aqi_carbon_monoxide,pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone`
+  - `hourly=european_aqi,us_aqi,pm10,pm2_5`
+  - `timezone=Asia/Dhaka`, `forecast_days=5`
+- **Returns:**
+  - `getAirQuality` → `ApiResponse<OpenMeteoAirQuality>` (legacy single-current wrapper).
+  - `getAirQualityBundle` → `ApiResponse<AirQualityBundle>` with `current`, `hourly` (120 h), and `daily`.
+- **AQI scales:**
+  - **US AQI** (EPA, 0–500) is the primary scale; category bands and published health guidance live in `src/utils/airQuality.ts`.
+  - **European AQI** (EEA 2024 bands, 0–100+) is shown as a secondary reading.
+- **Units:** every pollutant concentration is `µg/m³` (`carbon_monoxide` included — the API returns it in µg/m³, not ppm).
 - **Limitations:**
-  - Modeled from CAMS (Copernicus) + satellite, **not** live ground sensors; treat as indicative.
-  - Pollutant set is limited to the modeled variables above.
-  - Same attribution and rate-limit caveats as weather.
+  - Modeled from CAMS (Copernicus) at ~11 km (Europe) / ~45 km (global) resolution — **model estimates, not ground-sensor measurements**. The UI labels this with a "Model-based" badge and an explanatory note.
+  - Missing pollutant values are returned as `null` and rendered as "—"; they are never replaced with `0`.
+  - **No native daily AQI aggregate exists.** `AirQualityBundle.daily` is derived from the real hourly forecast (daily max/mean per date) and labeled as derived.
+  - Same attribution and rate-limit caveats as weather; HTTP `429` is retryable.
 
 ### ৬.৩ Open-Meteo — Geocoding (`API_ENDPOINTS.openMeteo.geocoding`)
 

@@ -313,3 +313,167 @@ export function getWeatherBundle(
     signal: options.signal,
   });
 }
+
+// ───────────────────────────────────────────────────────────────────────────
+// Full air-quality bundle (current + hourly + derived 5-day outlook).
+// Only real Open-Meteo/CAMS model fields are read; missing values stay `null`
+// and are never fabricated. Daily AQI is derived from the real hourly forecast
+// because the air-quality API exposes no native daily aggregate.
+// ───────────────────────────────────────────────────────────────────────────
+
+export interface AirQualitySubIndices {
+  pm25: number | null;
+  pm10: number | null;
+  no2: number | null;
+  so2: number | null;
+  o3: number | null;
+  co: number | null;
+}
+
+export interface AirQualityCurrent {
+  time: string;
+  europeanAqi: number | null;
+  usAqi: number | null;
+  pm25: number | null;
+  pm10: number | null;
+  carbonMonoxide: number | null;
+  nitrogenDioxide: number | null;
+  sulphurDioxide: number | null;
+  ozone: number | null;
+  subIndices: AirQualitySubIndices;
+}
+
+export interface AirQualityHour {
+  time: string;
+  europeanAqi: number | null;
+  usAqi: number | null;
+  pm25: number | null;
+  pm10: number | null;
+}
+
+export interface AirQualityDay {
+  date: string;
+  usAqiMax: number | null;
+  usAqiMean: number | null;
+  europeanAqiMax: number | null;
+  europeanAqiMean: number | null;
+}
+
+export interface AirQualityBundle {
+  current: AirQualityCurrent;
+  hourly: AirQualityHour[];
+  /** Derived from the hourly forecast (no native daily air-quality endpoint). */
+  daily: AirQualityDay[];
+}
+
+const numOrNull = (value: unknown): number | null => (isFiniteNumber(value) ? value : null);
+
+function numArrayOrNull(obj: Record<string, unknown>, key: string): (number | null)[] {
+  const raw = obj[key];
+  if (!Array.isArray(raw)) return [];
+  return raw.map((v) => (isFiniteNumber(v) ? v : null));
+}
+
+function maxOrNull(values: number[]): number | null {
+  return values.length === 0 ? null : Math.max(...values);
+}
+
+function meanOrNull(values: number[]): number | null {
+  if (values.length === 0) return null;
+  return values.reduce((sum, v) => sum + v, 0) / values.length;
+}
+
+function deriveDailyAirQuality(hourly: AirQualityHour[]): AirQualityDay[] {
+  const byDate = new Map<string, { us: number[]; eu: number[] }>();
+  for (const h of hourly) {
+    const date = h.time.slice(0, 10);
+    if (!date) continue;
+    const bucket = byDate.get(date) ?? { us: [], eu: [] };
+    if (h.usAqi != null) bucket.us.push(h.usAqi);
+    if (h.europeanAqi != null) bucket.eu.push(h.europeanAqi);
+    byDate.set(date, bucket);
+  }
+  return [...byDate.entries()]
+    .sort(([a], [b]) => (a < b ? -1 : 1))
+    .map(([date, b]) => ({
+      date,
+      usAqiMax: maxOrNull(b.us),
+      usAqiMean: meanOrNull(b.us),
+      europeanAqiMax: maxOrNull(b.eu),
+      europeanAqiMean: meanOrNull(b.eu),
+    }));
+}
+
+export function normalizeAirQualityBundle(raw: unknown): AirQualityBundle {
+  const root = assertRecord(raw, "root");
+  const current = assertRecord(root.current, "current");
+
+  if (!isFiniteNumber(current.european_aqi) && !isFiniteNumber(current.us_aqi)) {
+    throw new ValidationError("current air-quality index is missing");
+  }
+
+  const currentBlock: AirQualityCurrent = {
+    time: isString(current.time) ? current.time : "",
+    europeanAqi: numOrNull(current.european_aqi),
+    usAqi: numOrNull(current.us_aqi),
+    pm25: numOrNull(current.pm2_5),
+    pm10: numOrNull(current.pm10),
+    carbonMonoxide: numOrNull(current.carbon_monoxide),
+    nitrogenDioxide: numOrNull(current.nitrogen_dioxide),
+    sulphurDioxide: numOrNull(current.sulphur_dioxide),
+    ozone: numOrNull(current.ozone),
+    subIndices: {
+      pm25: numOrNull(current.us_aqi_pm2_5),
+      pm10: numOrNull(current.us_aqi_pm10),
+      no2: numOrNull(current.us_aqi_nitrogen_dioxide),
+      so2: numOrNull(current.us_aqi_sulphur_dioxide),
+      o3: numOrNull(current.us_aqi_ozone),
+      co: numOrNull(current.us_aqi_carbon_monoxide),
+    },
+  };
+
+  const hourlyObj = isRecord(root.hourly) ? root.hourly : {};
+  const hTimes = isStringArray(hourlyObj.time) ? hourlyObj.time : [];
+  const hEu = numArrayOrNull(hourlyObj, "european_aqi");
+  const hUs = numArrayOrNull(hourlyObj, "us_aqi");
+  const hPm25 = numArrayOrNull(hourlyObj, "pm2_5");
+  const hPm10 = numArrayOrNull(hourlyObj, "pm10");
+
+  const hourly: AirQualityHour[] = hTimes.map((time, i) => ({
+    time,
+    europeanAqi: hEu[i] ?? null,
+    usAqi: hUs[i] ?? null,
+    pm25: hPm25[i] ?? null,
+    pm10: hPm10[i] ?? null,
+  }));
+
+  return { current: currentBlock, hourly, daily: deriveDailyAirQuality(hourly) };
+}
+
+export const AIR_QUALITY_REFRESH_MS = 30 * 60 * 1000; // 30 minutes
+
+export function getAirQualityBundle(
+  lat: number = DHAKA_COORDS.lat,
+  lon: number = DHAKA_COORDS.lon,
+  options: OpenMeteoOptions = {},
+): Promise<ApiResponse<AirQualityBundle>> {
+  const params = new URLSearchParams({
+    latitude: String(lat),
+    longitude: String(lon),
+    current:
+      "european_aqi,us_aqi,us_aqi_pm2_5,us_aqi_pm10,us_aqi_nitrogen_dioxide,us_aqi_ozone,us_aqi_sulphur_dioxide,us_aqi_carbon_monoxide,pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone",
+    hourly: "european_aqi,us_aqi,pm10,pm2_5",
+    timezone: "Asia/Dhaka",
+    forecast_days: "5",
+  });
+
+  return request<AirQualityBundle>({
+    url: `${API_ENDPOINTS.openMeteo.airQuality}?${params.toString()}`,
+    source: API_ENDPOINTS.openMeteo.source,
+    validate: normalizeAirQualityBundle,
+    ttlMs: options.ttlMs ?? AIR_QUALITY_TTL,
+    retries: options.retries,
+    timeoutMs: options.timeoutMs,
+    signal: options.signal,
+  });
+}

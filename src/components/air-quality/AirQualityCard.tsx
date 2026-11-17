@@ -1,87 +1,154 @@
 "use client";
 
+import { AlertCircle } from "lucide-react";
 import { useApp } from "@/context/AppContext";
-import { pollutants } from "@/data/weather";
+import { cn } from "@/utils/cn";
+import {
+  primaryReading,
+  categoryForEuropeanAqi,
+  scalePositionPercent,
+  primaryPollutantKey,
+  pollutantMeta,
+  concentrationFor,
+  formatConcentration,
+  categoriesForScale,
+  US_AQI_GRADIENT,
+  EUROPEAN_AQI_GRADIENT,
+} from "@/utils/airQuality";
 
-export function AirQualityCard() {
-  const { isDark, t, location, snapshot } = useApp();
+/** Live AQI summary with scale, primary pollutant and published health guidance. */
+export function AirQualityCard({ className }: { className?: string }) {
+  const { isDark, t, location, airQuality } = useApp();
+
+  const shell = cn(
+    "rounded-2xl border p-6 shadow-sm space-y-4",
+    isDark ? "border-zinc-800 bg-[#1E1E1E]" : "border-gray-200 bg-white",
+    className,
+  );
+
+  if (!airQuality.data) {
+    if (airQuality.loading) {
+      return (
+        <div className={shell}>
+          <div className="h-4 w-40 bg-gray-200 dark:bg-zinc-800 rounded animate-pulse" />
+          <div className="h-10 w-28 bg-gray-200 dark:bg-zinc-800 rounded animate-pulse" />
+          <div className="h-2 w-full bg-gray-100 dark:bg-zinc-800 rounded animate-pulse" />
+          <div className="h-16 w-full bg-gray-100 dark:bg-zinc-800 rounded animate-pulse" />
+        </div>
+      );
+    }
+    return (
+      <div className={cn(shell, "flex flex-col items-center justify-center text-center gap-1 py-8")}>
+        <AlertCircle className="w-7 h-7 text-red-500" />
+        <p className="text-[13px] font-bold text-gray-500">{t.airQualityUnavailable}</p>
+        <p className="text-[11px] text-gray-400">{t.airQualityError}</p>
+      </div>
+    );
+  }
+
+  const cur = airQuality.data.current;
+  const reading = primaryReading(cur);
+  const category = reading.category;
+  const eurCategory = categoryForEuropeanAqi(cur.europeanAqi);
+  const primary = primaryPollutantKey(cur);
+  const primaryMeta = primary ? pollutantMeta(primary) : null;
+  const primaryConc = primary ? concentrationFor(cur, primary) : null;
+  const marker = scalePositionPercent(reading.value, reading.scale);
+  const categories = categoriesForScale(reading.scale);
+  const gradient = reading.scale === "us" ? US_AQI_GRADIENT : EUROPEAN_AQI_GRADIENT;
+  const scaleName = reading.scale === "us" ? t.usAqi : t.europeanAqi;
 
   return (
-    <div
-      className={
-        isDark
-          ? "rounded-2xl border border-zinc-800 bg-[#1E1E1E] p-6 shadow-sm space-y-5"
-          : "rounded-2xl border border-gray-200 bg-white p-6 shadow-sm space-y-5"
-      }
-    >
+    <div className={shell}>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h3 className="font-extrabold text-[15px] tracking-tight">
+            {t.airQualityToday} {location}
+          </h3>
+          <p className="text-[11px] text-gray-400 mt-0.5">{scaleName}</p>
+        </div>
+        <span className="shrink-0 px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-sky-50 text-sky-600 dark:bg-sky-950/30 dark:text-sky-300">
+          {t.aqiModelBadge}
+        </span>
+      </div>
+
+      <div className="flex items-end gap-3">
+        <span className={cn("text-4xl font-black leading-none", category?.textClass ?? "text-gray-500")}>
+          {reading.value ?? "—"}
+        </span>
+        {category && (
+          <span className={cn("text-[13px] font-extrabold pb-1", category.textClass)}>
+            {t[category.labelKey] ?? category.id}
+          </span>
+        )}
+        {reading.scale === "us" && cur.europeanAqi != null && (
+          <span className="ml-auto text-[11px] font-bold text-gray-400 pb-1 whitespace-nowrap">
+            {t.europeanAqi}:{" "}
+            <span className={cn("font-extrabold", eurCategory?.textClass ?? "text-gray-500")}>
+              {cur.europeanAqi}
+            </span>
+          </span>
+        )}
+        {reading.scale === "european" && cur.usAqi != null && (
+          <span className="ml-auto text-[11px] font-bold text-gray-400 pb-1 whitespace-nowrap">
+            {t.usAqi}:{" "}
+            <span className={cn("font-extrabold", category?.textClass ?? "text-gray-500")}>
+              {cur.usAqi}
+            </span>
+          </span>
+        )}
+      </div>
+
       <div>
-        <h3 className="font-extrabold text-[15px] tracking-tight">
-          Today&apos;s Air Quality in {location}
-        </h3>
-        <h4 className="text-lg font-black text-red-500 mt-2">
-          {t.unhealthy} {snapshot.aqi}
-        </h4>
-        <p className="text-[12px] leading-5 text-gray-400 mt-1">{t.maskWarning}</p>
-      </div>
-
-      <div className="relative py-2">
-        <div className="h-1.5 w-full bg-gradient-to-r from-emerald-400 via-yellow-400 via-orange-400 to-red-600 rounded-full" />
-        <div className="absolute top-0.5 left-[75%] w-3 h-3 bg-red-500 rounded-full border border-white shadow" />
-      </div>
-
-      <div className="border-t border-gray-50 dark:border-zinc-800 pt-4">
-        <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider">
-          {t.primaryPollutant}
-        </p>
-        <p className="text-[13px] font-bold mt-1 text-slate-700 dark:text-gray-200">
-          PM2.5 (Particulate matter less than 2.5 microns)
-        </p>
-      </div>
-
-      <div className="border-t border-gray-50 dark:border-zinc-800 pt-4">
-        <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-3">
-          {t.allPollutants}
-        </p>
-        <div className="space-y-3">
-          {pollutants.map((pol, i) => {
-            const radius = 14;
-            const circ = 2 * Math.PI * radius;
-            const offset = circ - (pol.val / pol.max) * circ;
-            return (
-              <div key={i} className="flex items-center justify-between">
-                <span className="text-[12px] font-medium text-gray-600 dark:text-gray-300">
-                  {pol.label}
-                </span>
-                <div className="flex items-center gap-2">
-                  <span className={`text-[11px] font-extrabold ${pol.col}`}>{pol.val} AQI</span>
-                  <div className="w-8 h-8 relative flex items-center justify-center">
-                    <svg className="w-full h-full transform -rotate-90">
-                      <circle
-                        cx="16"
-                        cy="16"
-                        r={radius}
-                        fill="transparent"
-                        stroke={isDark ? "#2D2D30" : "#F3F4F6"}
-                        strokeWidth="3"
-                      />
-                      <circle
-                        cx="16"
-                        cy="16"
-                        r={radius}
-                        fill="transparent"
-                        stroke={pol.stroke}
-                        strokeWidth="3"
-                        strokeDasharray={circ}
-                        strokeDashoffset={offset}
-                      />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+        <div className="relative pt-1.5">
+          <div className="h-2 w-full rounded-full" style={{ background: gradient }} />
+          {reading.value != null && (
+            <div className="absolute -top-1 -translate-x-1/2" style={{ left: `${marker}%` }}>
+              <div
+                className="w-4 h-4 rounded-full bg-white border-2 shadow"
+                style={{ borderColor: category?.color ?? "#9CA3AF" }}
+              />
+            </div>
+          )}
+        </div>
+        <div className="mt-2 grid grid-cols-2 gap-x-2 gap-y-1">
+          {categories.map((c) => (
+            <div key={c.id} className="flex items-center gap-1 min-w-0">
+              <span className="w-2 h-2 rounded-full shrink-0" style={{ background: c.color }} />
+              <span className="text-[9px] font-semibold text-gray-400 truncate">
+                {t[c.labelKey] ?? c.id}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
+
+      {primaryMeta && (
+        <div className={cn("rounded-xl border p-3", category?.bgClass, category?.borderClass)}>
+          <p className="text-[9px] uppercase font-bold tracking-wider text-gray-400">
+            {t.primaryPollutant}
+          </p>
+          <p className="text-[13px] font-bold mt-0.5">
+            {primaryMeta.symbol} — {t[primaryMeta.labelKey] ?? primaryMeta.symbol}
+          </p>
+          <p className="text-[11px] text-gray-500 mt-0.5">
+            {formatConcentration(primaryConc)} {primaryMeta.unit}
+          </p>
+        </div>
+      )}
+
+      {category && (
+        <div className={cn("rounded-xl border p-3", category.bgClass, category.borderClass)}>
+          <p className="text-[9px] uppercase font-bold tracking-wider text-gray-400">
+            {t.aqiHealthTitle}
+          </p>
+          <p className={cn("text-[12px] font-semibold mt-1 leading-5", category.textClass)}>
+            {t[category.guidanceKey] ?? ""}
+          </p>
+        </div>
+      )}
+
+      <p className="text-[10px] text-gray-400 leading-4">{t.aqiModelNote}</p>
     </div>
   );
 }
