@@ -1,0 +1,41 @@
+import type { TransportAlert, BusRoute } from "@/types";
+
+export const transportAlertsList: TransportAlert[] = [
+  { name: "Metro Line 1", status: "Good Service", color: "green" },
+  { name: "Bus Route 18", status: "Major Delays", color: "red" },
+  { name: "Kazipara", status: "Minor Delays", color: "orange" },
+  { name: "Avenue 5", status: "Good Service", color: "green" },
+  { name: "Shewrapara", status: "Major Delays", color: "red" },
+  { name: "Mirpur 14", status: "Minor Delays", color: "orange" },
+  { name: "Dhanmondi", status: "Major Delays", color: "red" },
+  { name: "Gulshan", status: "Minor Delays", color: "orange" },
+  { name: "Banani", status: "Good Service", color: "green" },
+  { name: "Uttara", status: "Major Delays", color: "red" },
+  { name: "Airport Road", status: "Minor Delays", color: "orange" },
+  { name: "Mohakhali", status: "Major Delays", color: "red" },
+  { name: "Farmgate", status: "Minor Delays", color: "orange" },
+  { name: "Dhanmondi 27", status: "Good Service", color: "green" },
+  { name: "Bashundhara R/A", status: "Major Delays", color: "red" },
+  { name: "Gulshan 2", status: "Major Delays", color: "red" },
+  { name: "Baridhara", status: "Major Delays", color: "red" },
+  { name: "Uttara Sector 7", status: "Minor Delays", color: "orange" },
+  { name: "Mirpur DOHS", status: "Good Service", color: "green" },
+  { name: "New Market", status: "Major Delays", color: "red" },
+  { name: "Khilgaon", status: "Minor Delays", color: "orange" },
+  { name: "Tejgaon", status: "Major Delays", color: "red" },
+  { name: "Mohammadpur", status: "Minor Delays", color: "orange" },
+  { name: "Savar", status: "Good Service", color: "green" },
+  { name: "Gazipur", status: "Major Delays", color: "red" },
+];
+
+export const busRoutesStatus: BusRoute[] = [
+  { name: "Bus Route 18", status: "Disrupted", color: "red" },
+  { name: "Dhanmondi", status: "Delayed", color: "orange" },
+  { name: "Baridhara", status: "Delayed", color: "orange" },
+  { name: "Mirpur 14", status: "On Time", color: "green" },
+  { name: "Gulshan", status: "Delayed", color: "orange" },
+  { name: "Gazipur", status: "Disrupted", color: "red" },
+  { name: "Uttara", status: "On Time", color: "green" },
+  { name: "Mohakhali", status: "On Time", color: "green" },
+  { name: "Savar", status: "Disrupted", color: "red" },
+];
