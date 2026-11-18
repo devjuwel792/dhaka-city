@@ -3,7 +3,6 @@ import type {
   ForecastDay,
   HourlyForecast,
   SectorInfo,
-  Pollutant,
   GaugeDatum,
   MapNode,
 } from "@/types";
@@ -30,24 +29,11 @@ export const trafficSectors: SectorInfo[] = [
   { sector: "Mohakhali Flyover", speed: "8 km/h", status: "Gridlock", color: "text-red-500" },
 ];
 
-export const pollutants: Pollutant[] = [
-  { label: "NO2 (Nitrogen Dioxide)", val: 10, max: 100, col: "text-emerald-500", stroke: "#10B981" },
-  { label: "O3 (Ozone)", val: 20, max: 100, col: "text-emerald-500", stroke: "#10B981" },
-  { label: "SO2 (Sulphur Dioxide)", val: 50, max: 100, col: "text-amber-500", stroke: "#F59E0B" },
-];
-
 /** App-based rides availability gauges (dashboard). */
 export const ridesGauges: GaugeDatum[] = [
   { pct: 43, label: "Available", stroke: "#10B981" },
   { pct: 71, label: "Limited", stroke: "#F59E0B" },
   { pct: 86, label: "Busy", stroke: "#EF4444" },
-];
-
-/** DEFRA air-pollution bar chart series (dashboard). */
-export const defraBars = [
-  { label: "Ozone", height: 70, color: "bg-emerald-450" },
-  { label: "NO2", height: 55, color: "bg-amber-450" },
-  { label: "Dust", height: 85, color: "bg-red-450" },
 ];
 
 /** City nodes rendered on the interactive transit map modal. */
