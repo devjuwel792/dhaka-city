@@ -10,6 +10,7 @@ import {
   Info,
 } from "lucide-react";
 import type { NavItem, ViewId } from "@/types";
+import { CITY_LOCATIONS } from "@/config/locations";
 
 /** Primary navigation (main city views). Labels are resolved at render-time. */
 export const primaryNav: { id: ViewId; icon: NavItem["icon"] }[] = [
@@ -30,13 +31,5 @@ export const secondaryNav: { id: ViewId; icon: NavItem["icon"] }[] = [
 
 export const allNav = [...primaryNav, ...secondaryNav];
 
-export const locationsList = [
-  "Mirpur 10",
-  "Dhanmondi 27",
-  "Gulshan 2",
-  "Uttara Sector 7",
-  "Banani",
-  "Mohakhali",
-  "Farmgate",
-  "Motijheel",
-];
+/** English names of all configured locations (see `CITY_LOCATIONS` for metadata). */
+export const locationsList = CITY_LOCATIONS.map((loc) => loc.nameEn);

@@ -4,7 +4,7 @@ export const APP_CONFIG = {
   org: "UIUXpert Lab",
   contactEmail: "dhk@citydb.bd",
   defaultView: "transit" as const,
-  defaultLocation: "Mirpur 10",
+  defaultLocation: "dhaka",
   refreshOptions: [5, 10, 15, 30] as const,
   tempUnits: ["C", "F"] as const,
   /** Simulated network latency for the mock API layer (ms). */

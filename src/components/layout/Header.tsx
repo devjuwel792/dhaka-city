@@ -9,11 +9,12 @@ import {
   Moon,
   Bell,
   Phone,
+  Check,
 } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { useClock } from "@/hooks/useClock";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
-import { locationsList } from "@/constants";
+import { CITY_LOCATIONS, getLocationMeta } from "@/config/locations";
 import { cn } from "@/utils/cn";
 import { NotificationPanel } from "@/components/notifications/NotificationPanel";
 
@@ -26,8 +27,8 @@ export function Header() {
     toggleTheme,
     lang,
     toggleLang,
-    location,
     setLocation,
+    selectedLocation,
     showLocationDropdown,
     setShowLocationDropdown,
     showNotificationPanel,
@@ -78,7 +79,7 @@ export function Header() {
             )}
           >
             <MapPin className="w-4 h-4 text-emerald-500 animate-pulse" />
-            <span>{location}</span>
+            <span>{lang === "bn" ? selectedLocation.nameBn : selectedLocation.nameEn}</span>
           </button>
 
           {showLocationDropdown && (
@@ -96,25 +97,36 @@ export function Header() {
               >
                 {t.searchLocation}
               </p>
-              {locationsList.map((loc) => (
-                <button
-                  key={loc}
-                  onClick={() => {
-                    setLocation(loc);
-                    setShowLocationDropdown(false);
-                  }}
-                  className={cn(
-                    "w-full text-left px-4 py-2.5 text-[13px] font-medium transition-colors",
-                    location === loc
-                      ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/20 dark:text-emerald-400"
-                      : isDark
-                        ? "text-gray-300 hover:bg-zinc-700/50"
-                        : "text-gray-700 hover:bg-gray-50",
-                  )}
-                >
-                  {loc}
-                </button>
-              ))}
+              {CITY_LOCATIONS.map((loc) => {
+                const active = selectedLocation.id === loc.id;
+                return (
+                  <button
+                    key={loc.id}
+                    onClick={() => {
+                      setLocation(loc.id);
+                      setShowLocationDropdown(false);
+                    }}
+                    className={cn(
+                      "w-full text-left px-4 py-2.5 text-[13px] font-medium transition-colors flex items-center justify-between gap-2",
+                      active
+                        ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/20 dark:text-emerald-400"
+                        : isDark
+                          ? "text-gray-300 hover:bg-zinc-700/50"
+                          : "text-gray-700 hover:bg-gray-50",
+                    )}
+                  >
+                    <span className="min-w-0">
+                      <span className="block truncate">
+                        {lang === "bn" ? loc.nameBn : loc.nameEn}
+                      </span>
+                      <span className="block text-[10px] font-medium text-gray-400 truncate">
+                        {getLocationMeta(loc, lang)}
+                      </span>
+                    </span>
+                    {active && <Check className="w-3.5 h-3.5 shrink-0" />}
+                  </button>
+                );
+              })}
             </div>
           )}
         </div>

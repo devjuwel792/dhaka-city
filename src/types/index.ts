@@ -122,10 +122,3 @@ export interface Pollutant {
   col: string;
   stroke: string;
 }
-
-export interface MapNode {
-  x: number;
-  y: number;
-  name: string;
-  col: string;
-}

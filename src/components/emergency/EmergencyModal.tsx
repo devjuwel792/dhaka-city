@@ -7,7 +7,9 @@ import { ModalShell } from "@/components/common/ModalShell";
 import { cn } from "@/utils/cn";
 
 export function EmergencyModal() {
-  const { isDark, t, setShowEmergencyModal } = useApp();
+  const { isDark, t, showEmergencyModal, setShowEmergencyModal } = useApp();
+
+  if (!showEmergencyModal) return null;
 
   return (
     <ModalShell onClose={() => setShowEmergencyModal(false)} maxWidth="max-w-xl">

@@ -2,7 +2,9 @@
 
 import {
   createContext,
+  useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -10,6 +12,12 @@ import {
 import type { Lang, TempUnit, ViewId, Translations, CitySnapshot } from "@/types";
 import { translations } from "@/constants/translations";
 import { APP_CONFIG } from "@/config";
+import {
+  resolveLocation,
+  loadStoredLocationId,
+  saveStoredLocationId,
+  type CityLocation,
+} from "@/config/locations";
 import { useRefreshTrigger } from "@/hooks/useRefreshTrigger";
 import { useCitySnapshot } from "@/hooks/useCitySnapshot";
 import { useWeatherFeed, type WeatherState } from "@/hooks/useWeatherFeed";
@@ -30,6 +38,8 @@ interface AppContextValue {
   toggleTheme: () => void;
   location: string;
   setLocation: (location: string) => void;
+  /** Fully resolved metadata for the current selection (id, names, coords, area). */
+  selectedLocation: CityLocation;
   tempUnit: TempUnit;
   setTempUnit: (unit: TempUnit) => void;
   refreshRate: number;
@@ -81,7 +91,7 @@ const AppContext = createContext<AppContextValue | null>(null);
 export function AppProvider({ children }: { children: ReactNode }) {
   const [lang, setLang] = useState<Lang>("en");
   const [isDark, setIsDark] = useState<boolean>(false);
-  const [location, setLocation] = useState<string>(APP_CONFIG.defaultLocation);
+  const [location, setLocationState] = useState<string>(APP_CONFIG.defaultLocation);
   const [tempUnit, setTempUnit] = useState<TempUnit>("C");
   const [refreshRate, setRefreshRate] = useState<number>(10);
   const [activeTab, setActiveTab] = useState<ViewId>(APP_CONFIG.defaultView);
@@ -104,6 +114,23 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const weather = useWeatherFeed(location);
   const airQuality = useAirQualityFeed(location);
 
+  const selectedLocation = useMemo(() => resolveLocation(location), [location]);
+
+  // Restore the persisted selection after hydration (avoids SSR mismatch).
+  useEffect(() => {
+    const stored = loadStoredLocationId();
+    if (stored) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setLocationState(resolveLocation(stored).id);
+    }
+  }, []);
+
+  const setLocation = useCallback((next: string) => {
+    const resolved = resolveLocation(next);
+    setLocationState(resolved.id);
+    saveStoredLocationId(resolved.id);
+  }, []);
+
   const t = translations[lang];
 
   const value = useMemo<AppContextValue>(
@@ -116,6 +143,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       toggleTheme: () => setIsDark((prev) => !prev),
       location,
       setLocation,
+      selectedLocation,
       tempUnit,
       setTempUnit,
       refreshRate,
@@ -157,6 +185,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       lang,
       isDark,
       location,
+      setLocation,
+      selectedLocation,
       tempUnit,
       refreshRate,
       activeTab,

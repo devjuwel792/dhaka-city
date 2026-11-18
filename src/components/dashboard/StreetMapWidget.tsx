@@ -2,9 +2,12 @@
 
 import { useApp } from "@/context/AppContext";
 import { cn } from "@/utils/cn";
+import { getLocationLabel } from "@/config/locations";
+import { MapCanvas } from "@/components/map/MapCanvas";
 
+/** Dashboard map widget. Centers on the selected location and shows area markers. */
 export function StreetMapWidget({ className }: { className?: string }) {
-  const { isDark, t, location, setShowMapModal } = useApp();
+  const { isDark, lang, t, selectedLocation, setShowMapModal } = useApp();
 
   return (
     <div
@@ -24,37 +27,21 @@ export function StreetMapWidget({ className }: { className?: string }) {
         </button>
       </div>
 
-      <div className="flex-1 rounded-xl overflow-hidden relative border border-gray-100 dark:border-zinc-800 bg-[#E8ECEF] dark:bg-zinc-800 flex items-center justify-center">
-        <svg className="w-full h-full opacity-70" viewBox="0 0 200 120">
-          <rect x="0" y="0" width="200" height="120" fill={isDark ? "#2A2A2A" : "#F3F4F6"} />
-          <rect x="15" y="15" width="60" height="40" fill={isDark ? "#1A1A1A" : "#FFFFFF"} rx="4" />
-          <rect x="90" y="15" width="95" height="40" fill={isDark ? "#1A1A1A" : "#FFFFFF"} rx="4" />
-          <rect x="15" y="70" width="85" height="35" fill={isDark ? "#1A1A1A" : "#FFFFFF"} rx="4" />
-          <path d="M 0 60 L 200 60" stroke={isDark ? "#3F3F46" : "#E2E8F0"} strokeWidth="16" />
-          <path d="M 80 0 L 80 120" stroke={isDark ? "#3F3F46" : "#E2E8F0"} strokeWidth="16" />
-          <path d="M 0 60 L 200 60" stroke="#F59E0B" strokeWidth="1" strokeDasharray="4,4" />
-          <path d="M 80 0 L 80 120" stroke="#F59E0B" strokeWidth="1" strokeDasharray="4,4" />
-          <circle cx="80" cy="60" r="5" fill="#EF4444" />
-          <circle
-            cx="80"
-            cy="60"
-            r="10"
-            fill="none"
-            stroke="#EF4444"
-            strokeWidth="2"
-            className="animate-ping"
-          />
-        </svg>
+      <div className="flex-1 min-h-[170px] rounded-xl overflow-hidden relative border border-gray-100 dark:border-zinc-800">
+        <MapCanvas
+          selectedId={selectedLocation.id}
+          lang={lang}
+          className="h-full w-full"
+        />
+      </div>
 
-        <div className="absolute inset-0 flex flex-col justify-between p-3 pointer-events-none">
-          <span className="text-[10px] bg-emerald-500 text-white font-bold px-2 py-0.5 rounded shadow">
-            {location}
-          </span>
-          <div className="bg-black/60 backdrop-blur-sm p-1.5 rounded text-white flex justify-between items-center w-full">
-            <span className="text-[9px] font-bold">Speed: Avg 24 km/h</span>
-            <span className="text-[9px] text-amber-400 font-bold">Congested</span>
-          </div>
-        </div>
+      <div className="mt-3 flex items-center justify-between gap-2 text-[10px] text-gray-400">
+        <span className="font-bold truncate">
+          {getLocationLabel(selectedLocation, lang)}
+        </span>
+        <span className="font-mono truncate shrink-0">
+          {selectedLocation.lat.toFixed(4)}, {selectedLocation.lon.toFixed(4)}
+        </span>
       </div>
     </div>
   );

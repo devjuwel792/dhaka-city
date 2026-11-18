@@ -4,7 +4,6 @@ import type {
   HourlyForecast,
   SectorInfo,
   GaugeDatum,
-  MapNode,
 } from "@/types";
 
 export const forecastDays: ForecastDay[] = [
@@ -34,14 +33,4 @@ export const ridesGauges: GaugeDatum[] = [
   { pct: 43, label: "Available", stroke: "#10B981" },
   { pct: 71, label: "Limited", stroke: "#F59E0B" },
   { pct: 86, label: "Busy", stroke: "#EF4444" },
-];
-
-/** City nodes rendered on the interactive transit map modal. */
-export const mapNodes: MapNode[] = [
-  { x: 120, y: 50, name: "Uttara", col: "#EF4444" },
-  { x: 120, y: 140, name: "Mirpur 10", col: "#10B981" },
-  { x: 200, y: 200, name: "Farmgate", col: "#F59E0B" },
-  { x: 250, y: 280, name: "Shahbagh", col: "#3B82F6" },
-  { x: 350, y: 300, name: "Motijheel", col: "#10B981" },
-  { x: 400, y: 110, name: "Gulshan 2", col: "#EF4444" },
 ];

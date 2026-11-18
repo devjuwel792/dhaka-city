@@ -1,4 +1,5 @@
 import type { CitySnapshot } from "@/types";
+import { resolveLocation } from "@/config/locations";
 
 const clamp = (value: number, min: number, max: number): number =>
   Math.min(max, Math.max(min, value));
@@ -12,11 +13,12 @@ export function computeCitySnapshot(
   location: string,
   refreshTrigger: number,
 ): CitySnapshot {
+  const name = resolveLocation(location).nameEn;
   let multiplier = 1.0;
-  if (location.includes("Gulshan")) multiplier = 1.15;
-  if (location.includes("Dhanmondi")) multiplier = 0.95;
-  if (location.includes("Uttara")) multiplier = 0.85;
-  if (location.includes("Motijheel")) multiplier = 1.25;
+  if (name.includes("Gulshan")) multiplier = 1.15;
+  if (name.includes("Dhanmondi")) multiplier = 0.95;
+  if (name.includes("Uttara")) multiplier = 0.85;
+  if (name.includes("Motijheel")) multiplier = 1.25;
 
   const fluctuation = Math.sin(refreshTrigger) * 2;
 
