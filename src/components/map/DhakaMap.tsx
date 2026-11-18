@@ -15,7 +15,6 @@ import "leaflet/dist/leaflet.css";
 import { CITY_LOCATIONS, type CityLocation } from "@/config/locations";
 import {
   MAP_LAYERS,
-  DEFAULT_MAP_LAYER_ID,
   MAP_DEFAULT_ZOOM,
   MAP_MIN_ZOOM,
   MAP_MAX_ZOOM,
@@ -26,6 +25,8 @@ export interface DhakaMapProps {
   selectedId: string;
   lang: Lang;
   className?: string;
+  /** Map layer id from settings (see MAP_LAYERS). */
+  activeLayerId?: string;
   /** Show every configured area marker, not just the selected one. */
   showAllMarkers?: boolean;
 }
@@ -100,6 +101,7 @@ export function DhakaMap({
   selectedId,
   lang,
   className,
+  activeLayerId,
   showAllMarkers = true,
 }: DhakaMapProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -107,6 +109,9 @@ export function DhakaMap({
 
   const selected =
     CITY_LOCATIONS.find((loc) => loc.id === selectedId) ?? CITY_LOCATIONS[0];
+  const layerId = MAP_LAYERS.some((layer) => layer.id === activeLayerId)
+    ? (activeLayerId as string)
+    : MAP_LAYERS[0].id;
 
   useEffect(() => {
     const onFullscreenChange = () => {
@@ -132,6 +137,7 @@ export function DhakaMap({
   return (
     <div ref={wrapperRef} className="relative h-full w-full">
       <MapContainer
+        key={layerId}
         ref={mapRef}
         center={[selected.lat, selected.lon]}
         zoom={MAP_DEFAULT_ZOOM}
@@ -146,7 +152,7 @@ export function DhakaMap({
           {MAP_LAYERS.map((layer) => (
             <LayersControl.BaseLayer
               key={layer.id}
-              checked={layer.id === DEFAULT_MAP_LAYER_ID}
+              checked={layer.id === layerId}
               name={`${lang === "bn" ? layer.nameBn : layer.nameEn}`}
             >
               <TileLayer

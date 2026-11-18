@@ -7,7 +7,7 @@ import { CAMERA_FEEDS } from "@/data/cameras";
 import { CameraPlayer } from "./CameraPlayer";
 
 export function CameraModal() {
-  const { showCameraModal, setShowCameraModal, lang } = useApp();
+  const { showCameraModal, setShowCameraModal, lang, cameraAutoplay } = useApp();
 
   useEffect(() => {
     if (!showCameraModal) return;
@@ -57,7 +57,7 @@ export function CameraModal() {
             src={feed.videoSrc}
             poster={feed.poster}
             label={`${feed.name} demo footage`}
-            autoPlay
+            autoPlay={cameraAutoplay}
             controls
             preload="metadata"
           />

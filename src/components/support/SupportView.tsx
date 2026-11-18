@@ -103,18 +103,26 @@ export function SupportView() {
   }, [faqs, faqQuery]);
 
   useEffect(() => {
-    const contact = readDraft<ContactDraft>(CONTACT_DRAFT_KEY);
-    if (contact) {
-      if (typeof contact.name === "string") setContactName(contact.name);
-      if (typeof contact.email === "string") setContactEmail(contact.email);
-      if (typeof contact.message === "string") setContactMessage(contact.message);
-    }
-    const feedback = readDraft<FeedbackDraft>(FEEDBACK_DRAFT_KEY);
-    if (feedback) {
-      if (typeof feedback.subject === "string") setFeedbackSubject(feedback.subject);
-      if (typeof feedback.description === "string") setFeedbackDesc(feedback.description);
-    }
-    setDraftsReady(true);
+    let cancelled = false;
+    // Defer to after hydration so restored drafts never cause an SSR mismatch.
+    queueMicrotask(() => {
+      if (cancelled) return;
+      const contact = readDraft<ContactDraft>(CONTACT_DRAFT_KEY);
+      if (contact) {
+        if (typeof contact.name === "string") setContactName(contact.name);
+        if (typeof contact.email === "string") setContactEmail(contact.email);
+        if (typeof contact.message === "string") setContactMessage(contact.message);
+      }
+      const feedback = readDraft<FeedbackDraft>(FEEDBACK_DRAFT_KEY);
+      if (feedback) {
+        if (typeof feedback.subject === "string") setFeedbackSubject(feedback.subject);
+        if (typeof feedback.description === "string") setFeedbackDesc(feedback.description);
+      }
+      setDraftsReady(true);
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {

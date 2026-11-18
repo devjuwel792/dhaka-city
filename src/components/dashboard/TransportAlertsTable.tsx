@@ -17,7 +17,12 @@ export function TransportAlertsTable() {
       )}
     >
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-bold text-[15px] tracking-tight">{t.transportAlerts}</h3>
+        <div className="flex items-center gap-2">
+          <h3 className="font-bold text-[15px] tracking-tight">{t.transportAlerts}</h3>
+          <span className="bg-amber-400 text-black font-extrabold text-[8px] px-1.5 py-0.5 rounded">
+            DEMO
+          </span>
+        </div>
         <button
           onClick={() => setActiveTab("transit")}
           className="text-[12px] text-emerald-500 font-bold hover:underline flex items-center gap-1"

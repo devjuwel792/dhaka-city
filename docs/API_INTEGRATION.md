@@ -55,6 +55,7 @@ src/
     health.ts             # Per-source health tracking (healthy/degraded/down/unknown)
     validators.ts         # Runtime type guards + ValidationError
     openMeteo.ts          # Real key-less public API modules (weather, air quality)
+    gdelt.ts              # GDELT DOC 2.0 news search (metadata only, no full text)
     index.ts              # Barrel exports (mock services + foundation)
    hooks/
      useApiResource.ts     # React hook: runs a request with AbortController cancellation
@@ -157,6 +158,18 @@ Only **public, key-less, CORS-enabled** APIs are integrated. Browser `fetch()` c
 - **Status:** Endpoint constant is defined for future location search; no wrapper function is exported yet (add `getGeocode()` following the `openMeteo.ts` pattern).
 - **Limitations:** city-level search only; not reverse geocoding.
 
+### ৬.৪ GDELT DOC 2.0 — News search (`getNewsSearch`)
+
+- **Endpoint:** `https://api.gdeltproject.org/api/v2/doc/doc`
+- **Docs:** https://blog.gdeltproject.org/gdelt-doc-2-0-api-debuts/
+- **Auth:** none (public).
+- **CORS:** not guaranteed for every origin. GDELT has been observed returning `HTTP 429 Too Many Requests` without `Access-Control-Allow-Origin`. The service is therefore treated as best-effort: failures surface as an unavailable state, and the UI shows separately labelled demo headlines rather than fabricated live articles.
+- **Params used:** `query`, `mode=artlist`, `format=json`, `maxrecords=30`, `sort=datedesc`, `timespan=7d`.
+- **Returns:** `ApiResponse<NewsSearchBundle>` with normalized `{ id, title, url, domain, language, country, publishedAt, image }`.
+- **Retries:** disabled (`retries: 0`) to avoid hammering a rate-limited endpoint.
+- **Caching:** 10 minutes (`NEWS_REFRESH_MS`).
+- **Limitations:** metadata only (headline + link); no article body is fetched or stored. Duplicate URLs are removed. `seendate` is parsed as UTC. Query syntax follows GDELT (quoted phrases, uppercase `OR`).
+
 ### CORS Compatibility Summary
 
 | Provider | Endpoint | CORS | Key | Notes |
@@ -164,6 +177,7 @@ Only **public, key-less, CORS-enabled** APIs are integrated. Browser `fetch()` c
 | Open-Meteo | forecast | ✅ | none | Primary weather source |
 | Open-Meteo | air-quality | ✅ | none | Modeled AQI |
 | Open-Meteo | geocoding | ✅ | none | City search (not yet wrapped) |
+| GDELT | DOC 2.0 | ⚠️ not guaranteed | none | Best-effort; 429s surfaced as unavailable |
 
 > Rule of thumb: if a provider lacks CORS, the browser cannot call it directly. Under the "no proxy" constraint, such providers are simply **not integrated**; the layer reports a `network` error rather than faking data.
 
@@ -233,7 +247,7 @@ getHealthSnapshot("Open-Meteo");
 ## ৯. Caching & Freshness
 
 - Two-tier: in-memory `Map` (fast) + optional `localStorage` (survives reloads).
-- TTL per module (weather 10 min, air quality 15 min by default).
+- TTL per module (weather 10 min, air quality 30 min, news 10 min).
 - localStorage is pruned to `maxEntries`, oldest first; corrupt entries are dropped safely.
 - `fetchedAt` reflects the original store time, so the UI can show an accurate "last updated".
 

@@ -8,7 +8,7 @@ import { MapCanvas } from "./MapCanvas";
 import { cn } from "@/utils/cn";
 
 export function MapModal() {
-  const { isDark, lang, showMapModal, setShowMapModal, selectedLocation } = useApp();
+  const { isDark, lang, showMapModal, setShowMapModal, selectedLocation, mapLayer } = useApp();
 
   if (!showMapModal) return null;
 
@@ -43,6 +43,7 @@ export function MapModal() {
         <MapCanvas
           selectedId={selectedLocation.id}
           lang={lang}
+          activeLayerId={mapLayer}
           className="h-full w-full"
         />
       </div>

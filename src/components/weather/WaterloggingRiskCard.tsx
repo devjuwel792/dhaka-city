@@ -3,7 +3,7 @@
 import { useApp } from "@/context/AppContext";
 
 export function WaterloggingRiskCard() {
-  const { isDark, t, snapshot } = useApp();
+  const { isDark, t, lang, snapshot } = useApp();
 
   return (
     <div
@@ -14,7 +14,17 @@ export function WaterloggingRiskCard() {
       }
     >
       <div>
-        <h3 className="font-bold text-[14px] tracking-tight">{t.waterloggingRisk}</h3>
+        <div className="flex items-center justify-between gap-2">
+          <h3 className="font-bold text-[14px] tracking-tight">{t.waterloggingRisk}</h3>
+          <span className="bg-amber-400 text-black font-extrabold text-[8px] px-1.5 py-0.5 rounded">
+            DEMO
+          </span>
+        </div>
+        <p className="text-[10px] text-gray-400 mt-0.5">
+          {lang === "bn"
+            ? "নমুনা অনুমান — বাস্তব পানি জমার পরিমাপ নয়"
+            : "Sample estimate — not a measured water level"}
+        </p>
         <div className="flex gap-2.5 mt-2">
           <span className="flex items-center gap-1 text-[10px] text-gray-400 font-bold">
             <span className="w-2 h-2 rounded-full bg-emerald-500" /> Low

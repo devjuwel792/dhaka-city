@@ -12,7 +12,7 @@ const cardCn = (isDark: boolean) =>
   );
 
 export function AboutView() {
-  const { isDark, t } = useApp();
+  const { isDark, t, lang } = useApp();
 
   const team = [
     { bio: t.farhanaBio, initials: "FK", color: "bg-emerald-500" },
@@ -68,6 +68,35 @@ export function AboutView() {
               {src}
             </li>
           ))}
+        </ul>
+      </div>
+
+      {/* Demo policy */}
+      <div className={cardCn(isDark)}>
+        <h3 className="font-bold text-[15px] mb-3 text-amber-500">
+          {lang === "bn" ? "ডেমো ডেটা নীতি" : "Demo data policy"}
+        </h3>
+        <ul
+          className={cn(
+            "space-y-2 text-[13px] leading-6",
+            isDark ? "text-gray-300" : "text-gray-600",
+          )}
+        >
+          <li>
+            {lang === "bn"
+              ? "লাইভ: Open-Meteo আবহাওয়া, CAMS মডেল বায়ুর মান, OpenStreetMap টাইল এবং GDELT সংবাদ অনুসন্ধান।"
+              : "Live: Open-Meteo weather, CAMS model air quality, OpenStreetMap tiles and GDELT news search."}
+          </li>
+          <li>
+            {lang === "bn"
+              ? "ডেমো (DEMO ব্যাজ): ট্রাফিক কনজেশন, রুট স্ট্যাটাস, ক্যামেরা ফুটেজ, যানবাহনের প্রাপ্যতা, জলাবদ্ধতার ঝুঁকি এবং বিজ্ঞপ্তি।"
+              : "Demo (DEMO badge): traffic congestion, route statuses, camera footage, vehicle availability, waterlogging risk and alerts."}
+          </li>
+          <li>
+            {lang === "bn"
+              ? "কোনো লাইভ সিসিটিভি, যানজট বা ট্রানজিট ফিড সংযুক্ত নেই। কোনো মান পাওয়া না গেলে সেটি অনুমান না করে \"পাওয়া যায়নি\" দেখানো হয়।"
+              : "No live CCTV, congestion or transit feed is connected. When a value cannot be fetched it is shown as unavailable rather than estimated."}
+          </li>
         </ul>
       </div>
 

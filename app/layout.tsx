@@ -15,7 +15,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Dhaka City Smart Dashboard",
   description:
-    "Real-time (simulated) city dashboard for Dhaka — weather, transit, traffic, live street cameras, and news.",
+    "Dhaka city dashboard with live weather, model-based air quality, maps and news search. Traffic, transit status, camera footage and availability are clearly labelled demo samples.",
+  applicationName: "Dhaka City Smart Dashboard",
+  keywords: ["Dhaka", "weather", "air quality", "city dashboard", "Open-Meteo", "GDELT"],
 };
 
 export default function RootLayout({
