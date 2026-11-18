@@ -20,7 +20,12 @@ export function AvailabilityCard({ title, availability }: AvailabilityCardProps)
         isDark ? "bg-[#1E1E1E] border-zinc-800" : "bg-white border-gray-200",
       )}
     >
-      <h3 className="font-extrabold text-[15px] tracking-tight mb-2">{title}</h3>
+      <div className="flex items-center justify-between gap-2 mb-2">
+        <h3 className="font-extrabold text-[15px] tracking-tight">{title}</h3>
+        <span className="bg-amber-400 text-black font-extrabold text-[8px] px-1.5 py-0.5 rounded">
+          DEMO
+        </span>
+      </div>
       <div className="flex gap-2.5 mb-5 text-[10px] font-bold text-gray-400">
         <span className="flex items-center gap-1">
           <span className="w-2 h-2 rounded-full bg-emerald-500" /> {t.high}

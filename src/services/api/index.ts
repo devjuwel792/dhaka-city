@@ -49,3 +49,10 @@ export {
   type AirQualityDay,
   type AirQualitySubIndices,
 } from "./openMeteo";
+export {
+  getNewsSearch,
+  normalizeGdeltNews,
+  NEWS_REFRESH_MS,
+  type NewsSearchArticle,
+  type NewsSearchBundle,
+} from "./gdelt";

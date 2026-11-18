@@ -8,7 +8,7 @@ import { StatusBadge, StatusDot, EmptyState } from "@/components/common";
 import { cn } from "@/utils/cn";
 
 export function TransportAlertsList() {
-  const { isDark, t } = useApp();
+  const { isDark, t, lang } = useApp();
   const { alerts } = useTransitData();
   const list = alerts.data;
 
@@ -36,9 +36,16 @@ export function TransportAlertsList() {
       <div>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <div>
-            <h3 className="font-extrabold text-lg tracking-tight">{t.transportAlerts}</h3>
+            <div className="flex items-center gap-2">
+              <h3 className="font-extrabold text-lg tracking-tight">{t.transportAlerts}</h3>
+              <span className="bg-amber-400 text-black font-extrabold text-[8px] px-1.5 py-0.5 rounded">
+                DEMO
+              </span>
+            </div>
             <p className="text-[12px] text-gray-400 mt-0.5">
-              Real-time status of routes and checkpoints
+              {lang === "bn"
+                ? "রুট স্ট্যাটাসের নমুনা — লাইভ ফিড নয়"
+                : "Sample route status — not a live feed"}
             </p>
           </div>
 
@@ -120,7 +127,11 @@ export function TransportAlertsList() {
           isDark ? "border-zinc-800" : "border-gray-50",
         )}
       >
-        <p className="text-[11px] text-gray-400">Transit data refreshed every 60 seconds.</p>
+        <p className="text-[11px] text-gray-400">
+          {lang === "bn"
+            ? "সব স্ট্যাটাস ডেমো নমুনা — কোনো লাইভ ট্রানজিট ফিড সংযুক্ত নেই।"
+            : "All statuses are demo samples — no live transit feed is connected."}
+        </p>
       </div>
     </div>
   );

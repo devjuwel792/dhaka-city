@@ -1,5 +1,6 @@
 import type { NewsArticle } from "@/types";
 
+/** Static demo articles. Always labeled DEMO in the UI; not live reporting. */
 export const newsList: NewsArticle[] = [
   {
     id: 1,
@@ -26,3 +27,35 @@ export const newsList: NewsArticle[] = [
     image: "linear-gradient(135deg, #fed7aa, #f97316)",
   },
 ];
+export interface NewsTopic {
+  id: string;
+  label: string;
+  labelBn: string;
+  query: string;
+}
+
+/** GDELT search topics for Dhaka-focused news. */
+export const NEWS_TOPICS: NewsTopic[] = [
+  { id: "dhaka", label: "Dhaka", labelBn: "????", query: "Dhaka" },
+  {
+    id: "traffic",
+    label: "Traffic",
+    labelBn: "?????",
+    query: '"Dhaka traffic" OR "Dhaka congestion" OR "Dhaka road"',
+  },
+  {
+    id: "weather",
+    label: "Weather",
+    labelBn: "????????",
+    query: '"Dhaka weather" OR "Dhaka flood" OR "Dhaka rain"',
+  },
+  {
+    id: "transport",
+    label: "Transport",
+    labelBn: "??????",
+    query: '"Dhaka metro" OR "Dhaka bus" OR "Dhaka transport"',
+  },
+  { id: "bangla", label: "?????", labelBn: "?????", query: "????" },
+];
+
+export const DEFAULT_NEWS_TOPIC = NEWS_TOPICS[0];

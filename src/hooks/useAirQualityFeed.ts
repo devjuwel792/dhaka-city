@@ -13,6 +13,7 @@ export interface AirQualityState {
   fetchedAt: string | null;
   source: ApiSource | null;
   isDemo: boolean;
+  isCached: boolean;
 }
 
 interface RawAirQuality {
@@ -21,6 +22,7 @@ interface RawAirQuality {
   fetchedAt: string | null;
   source: ApiSource | null;
   isDemo: boolean;
+  isCached: boolean;
 }
 
 /**
@@ -51,6 +53,7 @@ export function useAirQualityFeed(location: string): AirQualityState {
               fetchedAt: res.fetchedAt,
               source: res.source,
               isDemo: res.isDemo,
+              isCached: res.isCached,
             });
           }
           setError(res.error);
@@ -87,5 +90,6 @@ export function useAirQualityFeed(location: string): AirQualityState {
     fetchedAt: isCurrent ? raw!.fetchedAt : null,
     source: isCurrent ? raw!.source : null,
     isDemo: isCurrent ? raw!.isDemo : false,
+    isCached: isCurrent ? raw!.isCached : false,
   };
 }

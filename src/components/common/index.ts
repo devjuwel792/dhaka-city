@@ -9,3 +9,4 @@ export { ErrorState } from "./ErrorState";
 export { EmptyState } from "./EmptyState";
 export { OfflineBanner } from "./OfflineBanner";
 export { DataFreshness } from "./DataFreshness";
+export { DataSourceBadge } from "./DataSourceBadge";

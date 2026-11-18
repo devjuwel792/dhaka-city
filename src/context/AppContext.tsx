@@ -23,6 +23,18 @@ import { useCitySnapshot } from "@/hooks/useCitySnapshot";
 import { useWeatherFeed, type WeatherState } from "@/hooks/useWeatherFeed";
 import { useAirQualityFeed, type AirQualityState } from "@/hooks/useAirQualityFeed";
 import {
+  loadSettings,
+  saveSettings,
+  exportSettings as exportSettingsUtil,
+  parseImportedSettings,
+  clearAppStorage,
+  validateSettings,
+  DEFAULT_SETTINGS,
+  DEFAULT_WIDGETS,
+  type AppSettings,
+  type WidgetVisibility,
+} from "@/services/storage";
+import {
   formatTemp as formatTempUtil,
   formatTempFull as formatTempFullUtil,
   formatTempNum as formatTempNumUtil,
@@ -58,6 +70,20 @@ interface AppContextValue {
   setCongestionAlerts: (value: boolean) => void;
   newsSources: boolean;
   setNewsSources: (value: boolean) => void;
+
+  // persisted advanced settings
+  widgets: WidgetVisibility;
+  setWidgets: (value: WidgetVisibility) => void;
+  toggleWidget: (key: keyof WidgetVisibility) => void;
+  mapLayer: string;
+  setMapLayer: (id: string) => void;
+  cameraAutoplay: boolean;
+  setCameraAutoplay: (value: boolean) => void;
+  resetSettings: () => void;
+  applySettings: (settings: AppSettings) => void;
+  exportSettingsJson: () => string;
+  importSettingsJson: (json: string) => void;
+  clearLocalData: () => void;
 
   // UI overlays
   showLocationDropdown: boolean;
@@ -101,6 +127,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [trafficAlerts, setTrafficAlerts] = useState<boolean>(true);
   const [congestionAlerts, setCongestionAlerts] = useState<boolean>(true);
   const [newsSources, setNewsSources] = useState<boolean>(true);
+  const [widgets, setWidgets] = useState<WidgetVisibility>(DEFAULT_WIDGETS);
+  const [mapLayer, setMapLayer] = useState<string>(DEFAULT_SETTINGS.mapLayer);
+  const [cameraAutoplay, setCameraAutoplay] = useState<boolean>(true);
+  const [hydrated, setHydrated] = useState<boolean>(false);
 
   const [showLocationDropdown, setShowLocationDropdown] = useState<boolean>(false);
   const [showMapModal, setShowMapModal] = useState<boolean>(false);
@@ -116,13 +146,30 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const selectedLocation = useMemo(() => resolveLocation(location), [location]);
 
-  // Restore the persisted selection after hydration (avoids SSR mismatch).
+  // Hydrate every persisted setting after mount (avoids SSR hydration mismatch).
   useEffect(() => {
-    const stored = loadStoredLocationId();
-    if (stored) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setLocationState(resolveLocation(stored).id);
-    }
+    const storedLocation = loadStoredLocationId();
+    const saved = loadSettings();
+    const locationId = storedLocation
+      ? resolveLocation(storedLocation).id
+      : resolveLocation(saved.location).id;
+
+    /* eslint-disable react-hooks/set-state-in-effect */
+    setLang(saved.lang);
+    setIsDark(saved.theme === "dark");
+    setTempUnit(saved.tempUnit);
+    setRefreshRate(saved.refreshRate);
+    setWeatherAlerts(saved.weatherAlerts);
+    setTrafficAlerts(saved.trafficAlerts);
+    setCongestionAlerts(saved.congestionAlerts);
+    setPreferredRoutes(saved.preferredRoutes);
+    setNewsSources(saved.newsSources);
+    setWidgets(saved.widgets);
+    setMapLayer(saved.mapLayer);
+    setCameraAutoplay(saved.cameraAutoplay);
+    setLocationState(locationId);
+    setHydrated(true);
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
   const setLocation = useCallback((next: string) => {
@@ -130,6 +177,80 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setLocationState(resolved.id);
     saveStoredLocationId(resolved.id);
   }, []);
+
+  const settings = useMemo<AppSettings>(
+    () => ({
+      theme: isDark ? "dark" : "light",
+      lang,
+      location,
+      tempUnit,
+      refreshRate,
+      weatherAlerts,
+      trafficAlerts,
+      congestionAlerts,
+      preferredRoutes,
+      newsSources,
+      widgets,
+      mapLayer,
+      cameraAutoplay,
+    }),
+    [
+      isDark,
+      lang,
+      location,
+      tempUnit,
+      refreshRate,
+      weatherAlerts,
+      trafficAlerts,
+      congestionAlerts,
+      preferredRoutes,
+      newsSources,
+      widgets,
+      mapLayer,
+      cameraAutoplay,
+    ],
+  );
+
+  useEffect(() => {
+    if (hydrated) saveSettings(settings);
+  }, [hydrated, settings]);
+
+  const toggleWidget = useCallback((key: keyof WidgetVisibility) => {
+    setWidgets((prev) => ({ ...prev, [key]: !prev[key] }));
+  }, []);
+
+  const applySettings = useCallback((next: AppSettings) => {
+    const safe = validateSettings(next);
+    setLang(safe.lang);
+    setIsDark(safe.theme === "dark");
+    setTempUnit(safe.tempUnit);
+    setRefreshRate(safe.refreshRate);
+    setWeatherAlerts(safe.weatherAlerts);
+    setTrafficAlerts(safe.trafficAlerts);
+    setCongestionAlerts(safe.congestionAlerts);
+    setPreferredRoutes(safe.preferredRoutes);
+    setNewsSources(safe.newsSources);
+    setWidgets(safe.widgets);
+    setMapLayer(safe.mapLayer);
+    setCameraAutoplay(safe.cameraAutoplay);
+    const loc = resolveLocation(safe.location);
+    setLocationState(loc.id);
+    saveStoredLocationId(loc.id);
+  }, []);
+
+  const resetSettings = useCallback(() => applySettings(DEFAULT_SETTINGS), [applySettings]);
+
+  const exportSettingsJson = useCallback(() => exportSettingsUtil(settings), [settings]);
+
+  const importSettingsJson = useCallback(
+    (json: string) => applySettings(parseImportedSettings(json)),
+    [applySettings],
+  );
+
+  const clearLocalData = useCallback(() => {
+    clearAppStorage();
+    applySettings(DEFAULT_SETTINGS);
+  }, [applySettings]);
 
   const t = translations[lang];
 
@@ -160,6 +281,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setCongestionAlerts,
       newsSources,
       setNewsSources,
+      widgets,
+      setWidgets,
+      toggleWidget,
+      mapLayer,
+      setMapLayer,
+      cameraAutoplay,
+      setCameraAutoplay,
+      resetSettings,
+      applySettings,
+      exportSettingsJson,
+      importSettingsJson,
+      clearLocalData,
       showLocationDropdown,
       setShowLocationDropdown,
       showMapModal,
@@ -195,6 +328,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
       trafficAlerts,
       congestionAlerts,
       newsSources,
+      widgets,
+      toggleWidget,
+      mapLayer,
+      cameraAutoplay,
+      resetSettings,
+      applySettings,
+      exportSettingsJson,
+      importSettingsJson,
+      clearLocalData,
       showLocationDropdown,
       showMapModal,
       showEmergencyModal,

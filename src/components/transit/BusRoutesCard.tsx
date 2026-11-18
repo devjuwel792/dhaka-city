@@ -6,7 +6,7 @@ import { StatusDot } from "@/components/common/StatusBadge";
 import { cn } from "@/utils/cn";
 
 export function BusRoutesCard() {
-  const { isDark, t } = useApp();
+  const { isDark, t, lang } = useApp();
   const { busRoutes } = useTransitData();
 
   return (
@@ -16,7 +16,12 @@ export function BusRoutesCard() {
         isDark ? "bg-[#1E1E1E] border-zinc-800" : "bg-white border-gray-200",
       )}
     >
-      <h3 className="font-extrabold text-[15px] tracking-tight mb-2">{t.busRoutesStatus}</h3>
+      <div className="flex items-center justify-between gap-2 mb-2">
+        <h3 className="font-extrabold text-[15px] tracking-tight">{t.busRoutesStatus}</h3>
+        <span className="bg-amber-400 text-black font-extrabold text-[8px] px-1.5 py-0.5 rounded">
+          DEMO
+        </span>
+      </div>
       <div className="flex gap-2.5 mb-4 text-[10px] font-bold text-gray-400">
         <span className="flex items-center gap-1">
           <StatusDot color="green" className="w-2 h-2" /> {t.onTime}
@@ -28,6 +33,10 @@ export function BusRoutesCard() {
           <StatusDot color="red" className="w-2 h-2" /> {t.disrupted}
         </span>
       </div>
+
+      <p className="text-[10px] text-gray-400 mb-3">
+        {lang === "bn" ? "নমুনা স্ট্যাটাস — লাইভ নয়" : "Sample status — not live"}
+      </p>
 
       <div
         className={cn(

@@ -36,6 +36,15 @@ export const API_ENDPOINTS = {
       license: "CC BY 4.0",
     } satisfies ApiSource,
   },
+  gdelt: {
+    doc: "https://api.gdeltproject.org/api/v2/doc/doc",
+    source: {
+      name: "GDELT Project",
+      url: "https://www.gdeltproject.org/",
+      attribution: "News search via the GDELT DOC 2.0 API",
+      license: "Public / open",
+    } satisfies ApiSource,
+  },
 } as const;
 
 /** Default coordinates for Dhaka (used when no location is supplied). */

@@ -5,8 +5,9 @@ import { useApp } from "@/context/AppContext";
 import { newsList } from "@/data/news";
 import { ModalShell } from "@/components/common/ModalShell";
 
+/** Demo article detail. Sample content — not live reporting. */
 export function NewsModal() {
-  const { showNewsModal, setShowNewsModal, isDark } = useApp();
+  const { showNewsModal, setShowNewsModal, isDark, lang } = useApp();
 
   if (showNewsModal === null) return null;
   const article = newsList.find((n) => n.id === showNewsModal);
@@ -21,8 +22,12 @@ export function NewsModal() {
         <span className="absolute top-4 left-4 bg-black/60 text-white font-bold text-[9px] px-2.5 py-0.5 rounded-full uppercase tracking-wider">
           {article.tag}
         </span>
+        <span className="absolute top-4 left-32 bg-amber-400 text-black font-extrabold text-[9px] px-2 py-0.5 rounded">
+          DEMO
+        </span>
         <button
           onClick={() => setShowNewsModal(null)}
+          aria-label="Close article"
           className="absolute top-4 right-4 p-1.5 rounded-full bg-black/30 hover:bg-black/65 text-white transition-colors"
         >
           <X className="w-4 h-4" />
@@ -40,9 +45,10 @@ export function NewsModal() {
         >
           {article.full}
         </p>
-        <p className="text-[12px] leading-5 text-gray-400">
-          Reported by Dhaka Smart City Information Desk. Updates are logged directly via emergency
-          transport frequencies.
+        <p className="text-[11px] leading-5 text-gray-400">
+          {lang === "bn"
+            ? "এটি একটি নমুনা সংবাদ, লাইভ রিপোর্ট নয়। কোনো প্রকাশক বা তারিখ যুক্ত করা হয়নি।"
+            : "This is sample content, not a live report. No publisher or publication date is claimed."}
         </p>
       </div>
 
@@ -53,12 +59,14 @@ export function NewsModal() {
             : "p-4 border-t border-gray-150 bg-gray-50/50 flex justify-between items-center text-xs"
         }
       >
-        <span className="text-gray-400">Published: Dec 13, 2024</span>
+        <span className="text-amber-500 font-bold">
+          {lang === "bn" ? "ডেমো কনটেন্ট" : "Demo content"}
+        </span>
         <button
           onClick={() => setShowNewsModal(null)}
           className="px-4 py-1.5 bg-emerald-500 text-white font-bold rounded-lg hover:bg-emerald-600 transition-colors"
         >
-          Close Article
+          {lang === "bn" ? "বন্ধ করুন" : "Close Article"}
         </button>
       </div>
     </ModalShell>

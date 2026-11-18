@@ -60,6 +60,36 @@ export function formatTimeLabel(iso: string): string {
   return `${h12}:${String(mm).padStart(2, "0")} ${ampm}`;
 }
 
+/** Relative "time ago" label for article timestamps; never invents a date. */
+export function formatRelativeTime(
+  iso: string | null,
+  lang: Lang,
+  now: number = Date.now(),
+): string {
+  if (!iso) return lang === "bn" ? "সময় অজানা" : "Time unknown";
+  const then = Date.parse(iso);
+  if (!Number.isFinite(then)) return lang === "bn" ? "সময় অজানা" : "Time unknown";
+
+  const diffMinutes = Math.round((now - then) / 60000);
+  if (diffMinutes < 1) return lang === "bn" ? "এইমাত্র" : "just now";
+  if (diffMinutes < 60) {
+    return lang === "bn" ? `${diffMinutes} মিনিট আগে` : `${diffMinutes}m ago`;
+  }
+  const diffHours = Math.round(diffMinutes / 60);
+  if (diffHours < 24) {
+    return lang === "bn" ? `${diffHours} ঘণ্টা আগে` : `${diffHours}h ago`;
+  }
+  const diffDays = Math.round(diffHours / 24);
+  if (diffDays < 7) {
+    return lang === "bn" ? `${diffDays} দিন আগে` : `${diffDays}d ago`;
+  }
+  return new Date(then).toLocaleDateString(lang === "en" ? "en-US" : "bn-BD", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
+
 const EN_WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const BN_WEEKDAYS = ["রবি", "সোম", "মঙ্গল", "বুধ", "বৃহঃ", "শুক্র", "শনি"];
 

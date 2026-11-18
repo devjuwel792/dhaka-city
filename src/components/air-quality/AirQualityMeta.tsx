@@ -2,6 +2,8 @@
 
 import { useApp } from "@/context/AppContext";
 import { DataFreshness } from "@/components/common/DataFreshness";
+import { DataSourceBadge } from "@/components/common/DataSourceBadge";
+import { computeDataStatus } from "@/services/dataSources";
 import { cn } from "@/utils/cn";
 
 /** Air-quality source attribution, last-updated time and stale-data warning. */
@@ -9,6 +11,14 @@ export function AirQualityMeta({ className }: { className?: string }) {
   const { t, airQuality } = useApp();
 
   if (!airQuality.data) return null;
+
+  const status = computeDataStatus({
+    sourceId: "open-meteo-air-quality",
+    fetchedAt: airQuality.fetchedAt,
+    isCached: airQuality.isCached,
+    isDemo: airQuality.isDemo,
+    hasError: Boolean(airQuality.error),
+  });
 
   return (
     <div
@@ -19,6 +29,7 @@ export function AirQualityMeta({ className }: { className?: string }) {
     >
       <DataFreshness updatedAt={airQuality.fetchedAt} />
       <span className="flex items-center gap-2">
+        <DataSourceBadge status={status} />
         {airQuality.error && (
           <span className="text-amber-500 font-semibold">{t.aqiStale}</span>
         )}

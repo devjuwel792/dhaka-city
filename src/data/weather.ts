@@ -2,7 +2,6 @@ import { Sun, CloudSun, Moon } from "lucide-react";
 import type {
   ForecastDay,
   HourlyForecast,
-  SectorInfo,
   GaugeDatum,
 } from "@/types";
 
@@ -19,13 +18,6 @@ export const hourlyForecast: HourlyForecast[] = [
   { time: "2 a.m.", temp: "18°", icon: CloudSun, color: "text-sky-400", hum: "35%", wind: "NE 6 kmph" },
   { time: "3 a.m.", temp: "16°", icon: CloudSun, color: "text-sky-400", hum: "37%", wind: "NE 8 kmph" },
   { time: "4 a.m.", temp: "13°", icon: Moon, color: "text-indigo-400", hum: "38%", wind: "NE 7 kmph" },
-];
-
-export const trafficSectors: SectorInfo[] = [
-  { sector: "Mirpur 10 Circle", speed: "12 km/h", status: "Critical", color: "text-red-500" },
-  { sector: "Rokeya Avenue", speed: "28 km/h", status: "Moderate", color: "text-amber-500" },
-  { sector: "Dhanmondi Road 27", speed: "34 km/h", status: "Fluid", color: "text-emerald-500" },
-  { sector: "Mohakhali Flyover", speed: "8 km/h", status: "Gridlock", color: "text-red-500" },
 ];
 
 /** App-based rides availability gauges (dashboard). */

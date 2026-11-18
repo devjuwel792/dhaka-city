@@ -13,6 +13,7 @@ export interface WeatherState {
   fetchedAt: string | null;
   source: ApiSource | null;
   isDemo: boolean;
+  isCached: boolean;
 }
 
 interface RawWeather {
@@ -21,6 +22,7 @@ interface RawWeather {
   fetchedAt: string | null;
   source: ApiSource | null;
   isDemo: boolean;
+  isCached: boolean;
 }
 
 /**
@@ -50,6 +52,7 @@ export function useWeatherFeed(location: string): WeatherState {
               fetchedAt: res.fetchedAt,
               source: res.source,
               isDemo: res.isDemo,
+              isCached: res.isCached,
             });
           }
           // On failure, keep the previous payload (preserve valid data) and
@@ -88,5 +91,6 @@ export function useWeatherFeed(location: string): WeatherState {
     fetchedAt: isCurrent ? raw!.fetchedAt : null,
     source: isCurrent ? raw!.source : null,
     isDemo: isCurrent ? raw!.isDemo : false,
+    isCached: isCurrent ? raw!.isCached : false,
   };
 }
