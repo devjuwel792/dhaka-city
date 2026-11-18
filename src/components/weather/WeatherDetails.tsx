@@ -5,7 +5,7 @@ import { useApp } from "@/context/AppContext";
 import { degreesToCompass } from "@/utils/weather";
 
 export function WeatherDetails() {
-  const { isDark, t, location, weather, formatTemp, formatTempNum } = useApp();
+  const { isDark, t, lang, location, weather, formatTemp, formatTempNum } = useApp();
 
   const card = isDark
     ? "rounded-2xl border border-zinc-800 bg-[#1E1E1E] p-5 shadow-sm"
@@ -118,20 +118,28 @@ export function WeatherDetails() {
         </div>
 
         <div className={isDark ? "rounded-2xl border border-zinc-800 bg-[#1E1E1E] p-4 shadow-sm flex flex-col justify-between" : "rounded-2xl border border-gray-200 bg-white p-4 shadow-sm flex flex-col justify-between"}>
-          <h4 className="font-bold text-[13px] tracking-tight mb-2">{t.satellite}</h4>
-          <div className="h-32 rounded-xl overflow-hidden bg-emerald-950/40 relative border border-emerald-900/20">
-            <svg className="w-full h-full opacity-60" viewBox="0 0 200 100">
-              <path d="M 0,20 Q 30,50 80,40 T 200,60" fill="none" stroke="#22D3EE" strokeWidth="6" />
-              <path d="M 40,0 Q 60,30 90,90" fill="none" stroke="#22D3EE" strokeWidth="4" />
-              <rect x="10" y="5" width="25" height="15" fill="#047857" opacity="0.3" rx="2" />
-              <rect x="110" y="10" width="40" height="25" fill="#047857" opacity="0.3" rx="2" />
-              <rect x="130" y="70" width="55" height="20" fill="#047857" opacity="0.3" rx="2" />
-            </svg>
-            <div className="absolute inset-0 bg-black/10 flex items-center justify-center">
-              <span className="text-[10px] bg-black/60 text-white font-mono px-2 py-0.5 rounded">
-                Sat Infra: Live
-              </span>
-            </div>
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <h4 className="font-bold text-[13px] tracking-tight">{t.satellite}</h4>
+            <span className="bg-amber-400 text-black font-extrabold text-[8px] px-1.5 py-0.5 rounded">
+              DEMO
+            </span>
+          </div>
+          <div
+            className={
+              isDark
+                ? "h-32 rounded-xl border border-zinc-800 bg-zinc-900/40 flex flex-col items-center justify-center text-center px-3"
+                : "h-32 rounded-xl border border-gray-100 bg-gray-50 flex flex-col items-center justify-center text-center px-3"
+            }
+          >
+            <AlertCircle className="w-5 h-5 text-gray-400" />
+            <p className="text-[11px] font-bold mt-1">
+              {lang === "bn" ? "কোনো স্যাটেলাইট ফিড নেই" : "No satellite feed integrated"}
+            </p>
+            <p className="text-[9px] text-gray-400 mt-0.5">
+              {lang === "bn"
+                ? "কোনো কাল্পনিক স্যাটেলাইট চিত্র দেখানো হয় না।"
+                : "No illustrative imagery is presented as live."}
+            </p>
           </div>
         </div>
       </div>

@@ -1,22 +1,24 @@
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
+
+function subscribe(callback: () => void): () => void {
+  window.addEventListener("online", callback);
+  window.addEventListener("offline", callback);
+  return () => {
+    window.removeEventListener("online", callback);
+    window.removeEventListener("offline", callback);
+  };
+}
+
+function getSnapshot(): boolean {
+  return navigator.onLine !== false;
+}
+
+/** SSR assumes online so the offline banner never flashes during hydration. */
+function getServerSnapshot(): boolean {
+  return true;
+}
 
 /** Tracks the browser online/offline status. */
 export function useOnlineStatus(): boolean {
-  const [online, setOnline] = useState<boolean>(() =>
-    // SSR has no meaningful navigator.onLine; assume online to avoid a flash.
-    typeof navigator === "undefined" || navigator.onLine !== false,
-  );
-
-  useEffect(() => {
-    const handleOnline = () => setOnline(true);
-    const handleOffline = () => setOnline(false);
-    window.addEventListener("online", handleOnline);
-    window.addEventListener("offline", handleOffline);
-    return () => {
-      window.removeEventListener("online", handleOnline);
-      window.removeEventListener("offline", handleOffline);
-    };
-  }, []);
-
-  return online;
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }

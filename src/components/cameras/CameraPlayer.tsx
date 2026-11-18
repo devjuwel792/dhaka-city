@@ -83,7 +83,7 @@ export function CameraPlayer({
         DEMO FOOTAGE — NOT LIVE CCTV
       </div>
 
-      {status === "loading" && (
+      {status === "loading" && preload !== "none" && (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-slate-950/50 text-white/80">
           <Loader2 className="w-6 h-6 animate-spin" />
           <span className="text-[10px] font-bold">Loading demo video…</span>

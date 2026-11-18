@@ -48,6 +48,17 @@ function optionalString(value: unknown): string {
   return isString(value) ? value.trim() : "";
 }
 
+/** Only web URLs are accepted; prevents javascript:/data: links in anchors. */
+function safeHttpUrl(value: string): string | null {
+  if (!value) return null;
+  try {
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:" ? url.toString() : null;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Validates and normalizes the GDELT artlist payload. Entries without a title
  * or URL are dropped; duplicates are removed. Throws ValidationError when the
@@ -65,7 +76,8 @@ export function normalizeGdeltNews(raw: unknown, query: string): NewsSearchBundl
 
   for (const entry of list) {
     if (!isRecord(entry)) continue;
-    const url = optionalString(entry.url) || optionalString(entry.url_mobile);
+    const rawUrl = optionalString(entry.url) || optionalString(entry.url_mobile);
+    const url = safeHttpUrl(rawUrl);
     const title = optionalString(entry.title);
     if (!url || !title || seen.has(url)) continue;
     seen.add(url);
@@ -78,7 +90,7 @@ export function normalizeGdeltNews(raw: unknown, query: string): NewsSearchBundl
       language: optionalString(entry.language),
       country: optionalString(entry.sourcecountry),
       publishedAt: parseSeenDate(entry.seendate),
-      image: optionalString(entry.socialimage) || null,
+      image: safeHttpUrl(optionalString(entry.socialimage)),
     });
   }
 

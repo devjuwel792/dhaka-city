@@ -4,7 +4,8 @@ import { formatClock, type ClockValue } from "@/utils/datetime";
 
 /** Live ticking clock, locale-aware, updates every second. */
 export function useClock(lang: Lang): ClockValue {
-  const [value, setValue] = useState<ClockValue>(() => formatClock(new Date(), lang));
+  // Empty on the server/first render so SSR and hydration cannot disagree.
+  const [value, setValue] = useState<ClockValue>({ time: "", date: "" });
 
   useEffect(() => {
     const update = () => setValue(formatClock(new Date(), lang));

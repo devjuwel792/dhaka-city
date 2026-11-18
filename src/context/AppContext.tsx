@@ -34,6 +34,7 @@ import {
   type AppSettings,
   type WidgetVisibility,
 } from "@/services/storage";
+import { clearNotifications } from "@/services/notificationStore";
 import {
   formatTemp as formatTempUtil,
   formatTempFull as formatTempFullUtil,
@@ -255,6 +256,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const clearLocalData = useCallback(() => {
     clearAppStorage();
+    clearNotifications();
     applySettings(DEFAULT_SETTINGS);
   }, [applySettings]);
 
