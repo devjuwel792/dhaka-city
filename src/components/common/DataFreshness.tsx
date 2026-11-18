@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useApp } from "@/context/AppContext";
 import { cn } from "@/utils/cn";
 
 interface DataFreshnessProps {
@@ -11,7 +12,14 @@ interface DataFreshnessProps {
   className?: string;
 }
 
-function relativeLabel(seconds: number): string {
+function relativeLabel(seconds: number, lang: "en" | "bn"): string {
+  if (lang === "bn") {
+    if (seconds < 5) return "এইমাত্র হালনাগাদ";
+    if (seconds < 60) return `${seconds} সেকেন্ড আগে হালনাগাদ`;
+    const minutes = Math.round(seconds / 60);
+    if (minutes < 60) return `${minutes} মিনিট আগে হালনাগাদ`;
+    return `${Math.round(minutes / 60)} ঘণ্টা আগে হালনাগাদ`;
+  }
   if (seconds < 5) return "Just updated";
   if (seconds < 60) return `Updated ${seconds}s ago`;
   const minutes = Math.round(seconds / 60);
@@ -21,6 +29,7 @@ function relativeLabel(seconds: number): string {
 
 /** Reusable data-freshness / last-updated indicator with a pulsing live dot. */
 export function DataFreshness({ updatedAt, refreshRate, className }: DataFreshnessProps) {
+  const { lang } = useApp();
   const [now, setNow] = useState<number>(() => Date.now());
 
   useEffect(() => {
@@ -37,11 +46,14 @@ export function DataFreshness({ updatedAt, refreshRate, className }: DataFreshne
           ? new Date(updatedAt).getTime()
           : updatedAt;
     const seconds = Number.isFinite(ts) ? Math.max(0, Math.round((now - ts) / 1000)) : 0;
-    text = relativeLabel(seconds);
+    text = relativeLabel(seconds, lang);
   } else if (refreshRate != null) {
-    text = `Auto-refresh: every ${refreshRate}s`;
+    text =
+      lang === "bn"
+        ? `স্বয়ংক্রিয় রিফ্রেশ: প্রতি ${refreshRate} সেকেন্ড`
+        : `Auto-refresh: every ${refreshRate}s`;
   } else {
-    text = "Live";
+    text = lang === "bn" ? "হালনাগাদ" : "Live";
   }
 
   return (

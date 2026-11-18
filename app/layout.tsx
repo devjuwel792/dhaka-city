@@ -29,7 +29,16 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              'try{var s=JSON.parse(localStorage.getItem("dhaka-city:settings")||"null");if(s){if(s.theme==="dark"){document.documentElement.classList.add("dark");document.documentElement.style.colorScheme="dark"}if(s.lang==="bn"){document.documentElement.lang="bn"}}}catch(e){}',
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

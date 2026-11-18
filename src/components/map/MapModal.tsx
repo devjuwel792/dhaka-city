@@ -33,6 +33,7 @@ export function MapModal() {
         </div>
         <button
           onClick={() => setShowMapModal(false)}
+          aria-label={lang === "bn" ? "মানচিত্র বন্ধ করুন" : "Close map"}
           className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800"
         >
           <X className="w-5 h-5" />
@@ -55,7 +56,9 @@ export function MapModal() {
         )}
       >
         <span className="text-[11px] text-gray-400">
-          Drag to pan · Scroll or use +/− to zoom · Click a marker for details.
+          {lang === "bn"
+            ? "টেনে সরান · স্ক্রল বা +/− দিয়ে জুম · বিস্তারিতের জন্য মার্কারে ক্লিক করুন।"
+            : "Drag to pan · Scroll or use +/− to zoom · Click a marker for details."}
         </span>
         <span className="text-[10px] font-mono text-gray-400">
           {selectedLocation.lat.toFixed(4)}, {selectedLocation.lon.toFixed(4)}

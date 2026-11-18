@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, AlertCircle } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { formatWeekday } from "@/utils/datetime";
 import { WeatherIcon } from "./WeatherIcon";
@@ -9,11 +9,6 @@ import { cn } from "@/utils/cn";
 /** Seven-day forecast grid, driven by the live Open-Meteo feed. */
 export function ForecastCard({ className }: { className?: string }) {
   const { isDark, lang, t, weather, formatTempNum } = useApp();
-
-  const navBtn = cn(
-    "p-1.5 rounded-full border text-gray-400 hover:text-gray-900 transition-colors",
-    isDark ? "border-zinc-700 bg-zinc-800" : "border-gray-200 bg-white",
-  );
 
   const shell = cn(
     "rounded-2xl border p-6 flex flex-col justify-between shadow-sm",
@@ -27,10 +22,7 @@ export function ForecastCard({ className }: { className?: string }) {
         <div className={shell}>
           <div className="flex items-center justify-between mb-4">
             <div className="h-4 w-28 bg-gray-200 dark:bg-zinc-800 rounded animate-pulse" />
-            <div className="flex gap-1.5">
-              <div className="w-7 h-7 rounded-full bg-gray-200 dark:bg-zinc-800 animate-pulse" />
-              <div className="w-7 h-7 rounded-full bg-gray-200 dark:bg-zinc-800 animate-pulse" />
-            </div>
+            <div className="h-4 w-16 bg-gray-200 dark:bg-zinc-800 rounded animate-pulse" />
           </div>
           <div className="grid grid-cols-4 md:grid-cols-7 gap-2">
             {Array.from({ length: 7 }).map((_, i) => (
@@ -57,14 +49,9 @@ export function ForecastCard({ className }: { className?: string }) {
     <div className={shell}>
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-bold text-[15px] tracking-tight">{t.forecast}</h3>
-        <div className="flex gap-1.5">
-          <button className={navBtn}>
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-          <button className={navBtn}>
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
+        <span className="text-[10px] font-bold text-gray-400">
+          {lang === "bn" ? "৭ দিন" : "7 days"}
+        </span>
       </div>
 
       <div className="grid grid-cols-4 md:grid-cols-7 gap-2">

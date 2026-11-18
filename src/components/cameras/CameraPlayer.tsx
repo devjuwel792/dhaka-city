@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AlertCircle, Loader2, Maximize2, Pause, Play } from "lucide-react";
+import { useApp } from "@/context/AppContext";
 import { cn } from "@/utils/cn";
 
 interface CameraPlayerProps {
@@ -29,6 +30,7 @@ export function CameraPlayer({
   preload = "none",
   className,
 }: CameraPlayerProps) {
+  const { lang } = useApp();
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [status, setStatus] = useState<PlayerStatus>("loading");
@@ -86,16 +88,28 @@ export function CameraPlayer({
       {status === "loading" && preload !== "none" && (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-slate-950/50 text-white/80">
           <Loader2 className="w-6 h-6 animate-spin" />
-          <span className="text-[10px] font-bold">Loading demo video…</span>
+          <span className="text-[10px] font-bold">
+            {lang === "bn" ? "ডেমো ভিডিও লোড হচ্ছে…" : "Loading demo video…"}
+          </span>
         </div>
       )}
 
       {status === "error" && (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-slate-950/90 p-4 text-center text-white">
           <AlertCircle className="w-6 h-6 text-amber-400" />
-          <p className="text-[11px] font-extrabold">Demo video unavailable</p>
+          <p className="text-[11px] font-extrabold">
+            {lang === "bn" ? "ডেমো ভিডিও পাওয়া যায়নি" : "Demo video unavailable"}
+          </p>
           <p className="text-[9px] text-white/60">
-            Add licensed footage to <span className="font-mono">public/videos/</span>.
+            {lang === "bn" ? (
+              <>
+                <span className="font-mono">public/videos/</span> ফোল্ডারে লাইসেন্সকৃত ফুটেজ যোগ করুন।
+              </>
+            ) : (
+              <>
+                Add licensed footage to <span className="font-mono">public/videos/</span>.
+              </>
+            )}
           </p>
         </div>
       )}
@@ -105,7 +119,15 @@ export function CameraPlayer({
           <button
             type="button"
             onClick={toggle}
-            aria-label={playing ? "Pause demo video" : "Play demo video"}
+            aria-label={
+              playing
+                ? lang === "bn"
+                  ? "ডেমো ভিডিও থামান"
+                  : "Pause demo video"
+                : lang === "bn"
+                  ? "ডেমো ভিডিও চালান"
+                  : "Play demo video"
+            }
             className="p-1.5 rounded-lg bg-black/60 text-white hover:bg-black/80"
           >
             {playing ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
@@ -113,7 +135,7 @@ export function CameraPlayer({
           <button
             type="button"
             onClick={fullscreen}
-            aria-label="Toggle fullscreen video"
+            aria-label={lang === "bn" ? "ফুলস্ক্রিন টগল করুন" : "Toggle fullscreen video"}
             className="p-1.5 rounded-lg bg-black/60 text-white hover:bg-black/80"
           >
             <Maximize2 className="w-4 h-4" />

@@ -27,13 +27,16 @@ export function WaterloggingRiskCard() {
         </p>
         <div className="flex gap-2.5 mt-2">
           <span className="flex items-center gap-1 text-[10px] text-gray-400 font-bold">
-            <span className="w-2 h-2 rounded-full bg-emerald-500" /> Low
+            <span className="w-2 h-2 rounded-full bg-emerald-500" />
+            {lang === "bn" ? "কম" : "Low"}
           </span>
           <span className="flex items-center gap-1 text-[10px] text-gray-400 font-bold">
-            <span className="w-2 h-2 rounded-full bg-amber-500" /> Moderate
+            <span className="w-2 h-2 rounded-full bg-amber-500" />
+            {lang === "bn" ? "মাঝারি" : "Moderate"}
           </span>
           <span className="flex items-center gap-1 text-[10px] text-gray-400 font-bold">
-            <span className="w-2 h-2 rounded-full bg-red-500" /> Heavy
+            <span className="w-2 h-2 rounded-full bg-red-500" />
+            {lang === "bn" ? "ভারী" : "Heavy"}
           </span>
         </div>
       </div>

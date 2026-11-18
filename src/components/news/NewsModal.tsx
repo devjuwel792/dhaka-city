@@ -56,7 +56,7 @@ export function NewsModal() {
         className={
           isDark
             ? "p-4 border-t border-zinc-800 bg-zinc-900/30 flex justify-between items-center text-xs"
-            : "p-4 border-t border-gray-150 bg-gray-50/50 flex justify-between items-center text-xs"
+            : "p-4 border-t border-gray-200 bg-gray-50/50 flex justify-between items-center text-xs"
         }
       >
         <span className="text-amber-500 font-bold">

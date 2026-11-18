@@ -75,7 +75,7 @@ export function TransportAlertsList() {
                   : "bg-white border-gray-300 text-gray-700",
               )}
             >
-              <option value="all">All</option>
+              <option value="all">{lang === "bn" ? "সব" : "All"}</option>
               <option value="good">{t.goodService}</option>
               <option value="minor">{t.minorDelays}</option>
               <option value="major">{t.majorDelays}</option>
@@ -113,8 +113,12 @@ export function TransportAlertsList() {
             ))
           ) : (
             <EmptyState
-              title="No routes match"
-              message="Try a different search or filter."
+              title={lang === "bn" ? "কোনো রুট মেলেনি" : "No routes match"}
+              message={
+                lang === "bn"
+                  ? "অন্য কিছু খুঁজুন বা ফিল্টার বদলান।"
+                  : "Try a different search or filter."
+              }
               className="py-8"
             />
           )}

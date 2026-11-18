@@ -11,7 +11,7 @@ interface AvailabilityCardProps {
 }
 
 export function AvailabilityCard({ title, availability }: AvailabilityCardProps) {
-  const { isDark, t } = useApp();
+  const { isDark, lang, t } = useApp();
 
   return (
     <div
@@ -39,9 +39,9 @@ export function AvailabilityCard({ title, availability }: AvailabilityCardProps)
       </div>
 
       <div className="grid grid-cols-3 gap-2">
-        <Gauge pct={availability.high} label="High" stroke="#10B981" isDark={isDark} labelClassName="text-[11px]" />
-        <Gauge pct={availability.mod} label="Moderate" stroke="#F59E0B" isDark={isDark} labelClassName="text-[11px]" />
-        <Gauge pct={availability.low} label="Low" stroke="#EF4444" isDark={isDark} labelClassName="text-[11px]" />
+        <Gauge pct={availability.high} label={lang === "bn" ? "বেশি" : "High"} stroke="#10B981" isDark={isDark} labelClassName="text-[11px]" />
+        <Gauge pct={availability.mod} label={lang === "bn" ? "মাঝারি" : "Moderate"} stroke="#F59E0B" isDark={isDark} labelClassName="text-[11px]" />
+        <Gauge pct={availability.low} label={lang === "bn" ? "কম" : "Low"} stroke="#EF4444" isDark={isDark} labelClassName="text-[11px]" />
       </div>
     </div>
   );

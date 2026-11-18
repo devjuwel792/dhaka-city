@@ -201,7 +201,7 @@ export function EmergencyModal() {
       <div
         className={cn(
           "p-4 border-t space-y-1",
-          isDark ? "border-zinc-800 bg-zinc-900/30" : "border-gray-150 bg-gray-50/50",
+          isDark ? "border-zinc-800 bg-zinc-900/30" : "border-gray-200 bg-gray-50/50",
         )}
       >
         <p className="flex items-start gap-1.5 text-[10px] text-gray-500 leading-4">

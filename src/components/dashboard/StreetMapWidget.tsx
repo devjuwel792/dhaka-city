@@ -17,13 +17,13 @@ export function StreetMapWidget({ className }: { className?: string }) {
         className,
       )}
     >
-      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-3">
         <h3 className="font-bold text-[14px] tracking-tight">{t.liveStreet}</h3>
         <button
           onClick={() => setShowMapModal(true)}
           className="text-[11px] font-bold text-emerald-500 hover:underline font-sans"
         >
-          Full Map
+          {lang === "bn" ? "পূর্ণ মানচিত্র" : "Full Map"}
         </button>
       </div>
 

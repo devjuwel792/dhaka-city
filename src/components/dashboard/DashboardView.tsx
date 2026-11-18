@@ -15,7 +15,35 @@ import { CameraCard } from "@/components/cameras/CameraCard";
 import { cn } from "@/utils/cn";
 
 export function DashboardView() {
-  const { isDark, t, widgets, setActiveTab, setShowCameraModal } = useApp();
+  const { isDark, t, lang, widgets, setActiveTab, setShowCameraModal } = useApp();
+  const anyWidget = Object.values(widgets).some(Boolean);
+
+  if (!anyWidget) {
+    return (
+      <div
+        className={cn(
+          "max-w-lg mx-auto mt-10 rounded-2xl border p-8 text-center",
+          isDark ? "bg-[#1E1E1E] border-zinc-800" : "bg-white border-gray-200",
+        )}
+      >
+        <h3 className="text-lg font-extrabold">
+          {lang === "bn" ? "সব উইজেট লুকানো আছে" : "All widgets are hidden"}
+        </h3>
+        <p className="text-[12px] text-gray-400 mt-1">
+          {lang === "bn"
+            ? "সেটিংস থেকে অন্তত একটি উইজেট চালু করুন।"
+            : "Enable at least one widget in Settings to see your dashboard."}
+        </p>
+        <button
+          type="button"
+          onClick={() => setActiveTab("settings")}
+          className="mt-4 px-4 py-2 rounded-xl bg-emerald-500 text-white text-[12px] font-bold hover:bg-emerald-600"
+        >
+          {t.settings}
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">

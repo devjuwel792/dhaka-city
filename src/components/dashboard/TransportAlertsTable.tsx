@@ -7,7 +7,7 @@ import { StatusBadge } from "@/components/common/StatusBadge";
 import { cn } from "@/utils/cn";
 
 export function TransportAlertsTable() {
-  const { isDark, t, setActiveTab } = useApp();
+  const { isDark, t, lang, setActiveTab } = useApp();
 
   return (
     <div
@@ -41,8 +41,8 @@ export function TransportAlertsTable() {
                 isDark ? "border-zinc-800 text-zinc-500" : "border-gray-100 text-gray-400",
               )}
             >
-              <th className="pb-3 pr-4">Name</th>
-              <th className="pb-3 text-right">Status</th>
+              <th className="pb-3 pr-4">{lang === "bn" ? "নাম" : "Name"}</th>
+              <th className="pb-3 text-right">{lang === "bn" ? "স্ট্যাটাস" : "Status"}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-50 dark:divide-zinc-800">

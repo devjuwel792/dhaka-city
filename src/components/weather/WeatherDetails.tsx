@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, Minus, AlertCircle } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { degreesToCompass } from "@/utils/weather";
 
@@ -22,15 +22,18 @@ export function WeatherDetails() {
       <div className="md:col-span-6 rounded-2xl border border-zinc-800 dark:border-zinc-800 bg-white dark:bg-[#1E1E1E] border-gray-200 p-5 shadow-sm flex flex-col justify-between min-h-[350px]">
         <div className="flex items-center justify-between mb-3">
           <h3 className="font-bold text-[14px] tracking-tight">{t.temperatureMap}</h3>
-          <div className="flex gap-1">
-            <button className={isDark ? "p-1 rounded bg-zinc-800 text-gray-200" : "p-1 rounded bg-gray-100 text-gray-700"}>
-              <Plus className="w-3.5 h-3.5" />
-            </button>
-            <button className={isDark ? "p-1 rounded bg-zinc-800 text-gray-200" : "p-1 rounded bg-gray-100 text-gray-700"}>
-              <Minus className="w-3.5 h-3.5" />
-            </button>
+          <div className="flex items-center gap-2">
+            <span className="bg-amber-400 text-black font-extrabold text-[8px] px-1.5 py-0.5 rounded">
+              DEMO
+            </span>
           </div>
         </div>
+
+        <p className="text-[10px] text-gray-400 mb-2">
+          {lang === "bn"
+            ? "চিত্রণমূলক মানচিত্র — শুধু ঢাকার বর্তমান তাপমাত্রা লাইভ।"
+            : "Illustrative map — only the Dhaka value is live."}
+        </p>
 
         <div className="flex-1 rounded-xl overflow-hidden relative border border-[#E9D558]/30 bg-[#F4DF77]/25 flex items-center justify-center">
           <svg className="w-full h-full opacity-65" viewBox="0 0 200 150">
@@ -52,7 +55,7 @@ export function WeatherDetails() {
           </svg>
 
           <div className="absolute bottom-3 inset-x-3 bg-black/60 backdrop-blur-sm px-3 py-2 rounded-lg text-white flex flex-col gap-1 pointer-events-none">
-            <div className="h-1.5 w-full bg-gradient-to-r from-blue-500 via-green-400 via-yellow-400 to-red-500 rounded-full" />
+            <div className="h-1.5 w-full bg-gradient-to-r from-blue-500 via-amber-400 to-red-500 rounded-full" />
             <div className="flex justify-between text-[9px] font-bold text-gray-300">
               <span>-20°C</span>
               <span>-10°</span>

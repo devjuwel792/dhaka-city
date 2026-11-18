@@ -173,10 +173,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
     /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
-  // Keep document language and color-scheme metadata in sync with the UI.
+  // Keep document language, color-scheme and dark variant in sync with the UI.
   useEffect(() => {
     document.documentElement.lang = lang;
     document.documentElement.style.colorScheme = isDark ? "dark" : "light";
+    document.documentElement.classList.toggle("dark", isDark);
   }, [lang, isDark]);
 
   const setLocation = useCallback((next: string) => {

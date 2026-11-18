@@ -69,7 +69,7 @@ export function NewsCard({ article, variant = "full", onClick }: NewsCardProps) 
           <p
             className={cn(
               "text-[13px] mt-2 leading-6",
-              isDark ? "text-gray-400" : "text-gray-605",
+              isDark ? "text-gray-400" : "text-gray-600",
             )}
           >
             {article.summary}
