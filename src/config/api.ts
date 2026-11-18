@@ -24,11 +24,30 @@ export const API_CONFIG = {
 } as const;
 
 /** Public, no-key APIs. All must allow browser CORS (see docs/API_INTEGRATION.md). */
+const envUrl = (value: string | undefined, fallback: string): string => {
+  const trimmed = value?.trim();
+  return trimmed ? trimmed : fallback;
+};
+
+const envCoord = (value: string | undefined, fallback: number): number => {
+  const parsed = Number(value);
+  return value?.trim() && Number.isFinite(parsed) ? parsed : fallback;
+};
+
 export const API_ENDPOINTS = {
   openMeteo: {
-    weather: "https://api.open-meteo.com/v1/forecast",
-    airQuality: "https://air-quality-api.open-meteo.com/v1/air-quality",
-    geocoding: "https://geocoding-api.open-meteo.com/v1/search",
+    weather: envUrl(
+      process.env.NEXT_PUBLIC_OPEN_METEO_WEATHER_URL,
+      "https://api.open-meteo.com/v1/forecast",
+    ),
+    airQuality: envUrl(
+      process.env.NEXT_PUBLIC_OPEN_METEO_AIR_QUALITY_URL,
+      "https://air-quality-api.open-meteo.com/v1/air-quality",
+    ),
+    geocoding: envUrl(
+      process.env.NEXT_PUBLIC_OPEN_METEO_GEOCODING_URL,
+      "https://geocoding-api.open-meteo.com/v1/search",
+    ),
     source: {
       name: "Open-Meteo",
       url: "https://open-meteo.com/",
@@ -37,7 +56,10 @@ export const API_ENDPOINTS = {
     } satisfies ApiSource,
   },
   gdelt: {
-    doc: "https://api.gdeltproject.org/api/v2/doc/doc",
+    doc: envUrl(
+      process.env.NEXT_PUBLIC_GDELT_DOC_URL,
+      "https://api.gdeltproject.org/api/v2/doc/doc",
+    ),
     source: {
       name: "GDELT Project",
       url: "https://www.gdeltproject.org/",
@@ -48,4 +70,7 @@ export const API_ENDPOINTS = {
 } as const;
 
 /** Default coordinates for Dhaka (used when no location is supplied). */
-export const DHAKA_COORDS = { lat: 23.8103, lon: 90.4125 } as const;
+export const DHAKA_COORDS = {
+  lat: envCoord(process.env.NEXT_PUBLIC_DHAKA_LAT, 23.8103),
+  lon: envCoord(process.env.NEXT_PUBLIC_DHAKA_LON, 90.4125),
+} as const;

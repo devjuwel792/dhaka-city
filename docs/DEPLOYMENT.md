@@ -9,7 +9,7 @@ npm run build
 npm run start     # local production check
 ```
 
-The app is a client-rendered Next.js App Router project with no API routes, server actions or environment variables. `next build` produces static pages (`/` and `/_not-found`).
+The app is a client-rendered Next.js App Router project with no API routes, server actions or required environment variables. `next build` produces static pages (`/` and `/_not-found`).
 
 ## Hosting
 
@@ -21,9 +21,15 @@ Works on any static/Node host that supports Next.js 16:
 
 If serving the exported static site behind a custom CDN, keep `public/videos/` available at `/videos/*` (demo MP4/JPEG files).
 
-## No environment variables
+## Environment variables
 
-There are no keys to configure. All endpoints are public and listed in `src/config/api.ts`. Do not add secrets to client code.
+There are no keys or secrets to configure. Optional public overrides are documented in `.env.example` (copy to `.env.local`):
+
+- `NEXT_PUBLIC_OPEN_METEO_WEATHER_URL`, `NEXT_PUBLIC_OPEN_METEO_AIR_QUALITY_URL`, `NEXT_PUBLIC_OPEN_METEO_GEOCODING_URL`
+- `NEXT_PUBLIC_GDELT_DOC_URL`
+- `NEXT_PUBLIC_DHAKA_LAT`, `NEXT_PUBLIC_DHAKA_LON`
+
+Every `NEXT_PUBLIC_*` value is embedded in the client bundle at build time, so never add API keys. Restart/rebuild after changing them. Defaults match the public endpoints in `src/config/api.ts`.
 
 ## Pre-deploy checklist
 
