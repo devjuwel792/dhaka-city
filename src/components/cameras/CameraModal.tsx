@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { Video, X } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { CAMERA_FEEDS } from "@/data/cameras";
@@ -7,6 +8,15 @@ import { CameraPlayer } from "./CameraPlayer";
 
 export function CameraModal() {
   const { showCameraModal, setShowCameraModal, lang } = useApp();
+
+  useEffect(() => {
+    if (!showCameraModal) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setShowCameraModal(null);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [showCameraModal, setShowCameraModal]);
 
   if (!showCameraModal) return null;
 

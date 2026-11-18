@@ -14,7 +14,7 @@ export function NewsModal() {
   if (!article) return null;
 
   return (
-    <ModalShell onClose={() => setShowNewsModal(null)} maxWidth="max-w-lg">
+    <ModalShell onClose={() => setShowNewsModal(null)} maxWidth="max-w-lg" label={article.title}>
       <div
         className="h-44 w-full relative flex items-end p-5"
         style={{ background: article.image }}

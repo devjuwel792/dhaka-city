@@ -8,10 +8,18 @@ interface ModalShellProps {
   children: React.ReactNode;
   maxWidth?: string;
   className?: string;
+  /** Accessible name for the dialog. */
+  label?: string;
 }
 
 /** Overlay + centered panel wrapper shared by all modals. */
-export function ModalShell({ onClose, children, maxWidth = "max-w-4xl", className }: ModalShellProps) {
+export function ModalShell({
+  onClose,
+  children,
+  maxWidth = "max-w-4xl",
+  className,
+  label,
+}: ModalShellProps) {
   const { isDark } = useApp();
   return (
     <div
@@ -19,6 +27,9 @@ export function ModalShell({ onClose, children, maxWidth = "max-w-4xl", classNam
       onClick={onClose}
     >
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={label}
         className={cn(
           "w-full rounded-2xl overflow-hidden shadow-2xl border",
           isDark

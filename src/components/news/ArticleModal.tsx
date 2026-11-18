@@ -28,7 +28,7 @@ export function ArticleModal({ article, onClose }: ArticleModalProps) {
   }, [onClose]);
 
   return (
-    <ModalShell onClose={onClose} maxWidth="max-w-lg">
+    <ModalShell onClose={onClose} maxWidth="max-w-lg" label={article.title}>
       <div className="relative p-6 pb-4 bg-emerald-500 text-white">
         <button
           onClick={onClose}

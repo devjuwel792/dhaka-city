@@ -24,12 +24,20 @@ export interface NavItem {
 
 export type StatusColor = "green" | "orange" | "red";
 
+export type EmergencyCategory = "national" | "police" | "fire" | "medical" | "utility";
+
 export interface EmergencyContact {
+  id: string;
+  category: EmergencyCategory;
   service: string;
+  serviceBn: string;
   number: string;
   desc: string;
+  descBn: string;
   icon: LucideIcon;
   color: string;
+  /** Public body that publishes this helpline. */
+  source: string;
 }
 
 export interface TransportAlert {

@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { useClock } from "@/hooks/useClock";
+import { useNotifications } from "@/hooks/useNotifications";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
 import { CITY_LOCATIONS, getLocationMeta } from "@/config/locations";
 import { cn } from "@/utils/cn";
@@ -39,6 +40,7 @@ export function Header() {
   } = useApp();
 
   const clock = useClock(lang);
+  const { unreadCount } = useNotifications();
   const locationRef = useRef<HTMLDivElement>(null);
   const notificationRef = useRef<HTMLDivElement>(null);
 
@@ -186,6 +188,12 @@ export function Header() {
         <div ref={notificationRef} className="relative notification-trigger">
           <button
             onClick={() => setShowNotificationPanel(!showNotificationPanel)}
+            aria-label={
+              unreadCount > 0
+                ? `${unreadCount} unread notifications`
+                : "Notifications, none unread"
+            }
+            aria-expanded={showNotificationPanel}
             className={cn(
               "p-2 rounded-full border relative transition-all",
               isDark
@@ -194,8 +202,15 @@ export function Header() {
             )}
           >
             <Bell className="w-4 h-4" />
-            <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-500 animate-ping" />
-            <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-500" />
+            {unreadCount > 0 && (
+              <>
+                <span className="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-red-500 animate-ping" />
+                <span className="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-red-500" />
+                <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 px-1 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </span>
+              </>
+            )}
           </button>
           {showNotificationPanel && <NotificationPanel />}
         </div>
