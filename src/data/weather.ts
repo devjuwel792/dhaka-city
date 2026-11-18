@@ -1,28 +1,29 @@
 import { Sun, CloudSun, Moon } from "lucide-react";
-import type {
-  ForecastDay,
-  HourlyForecast,
-  GaugeDatum,
-} from "@/types";
+import type { ForecastDay, HourlyForecast, GaugeDatum } from "@/types";
+import demoData from "./demo-data.json";
 
-export const forecastDays: ForecastDay[] = [
-  { day: "Fri, 13th", temp: 28, icon: Sun, color: "text-amber-500", bg: "bg-amber-50 dark:bg-amber-950/10" },
-  { day: "Sat, 14th", temp: 27, icon: Sun, color: "text-amber-500", bg: "bg-amber-50 dark:bg-amber-950/10" },
-  { day: "Sun, 15th", temp: 26, icon: CloudSun, color: "text-sky-400", bg: "bg-sky-50 dark:bg-sky-950/10" },
-  { day: "Mon, 16th", temp: 23, icon: CloudSun, color: "text-sky-400", bg: "bg-sky-50 dark:bg-sky-950/10" },
-  { day: "Tue, 17th", temp: 24, icon: CloudSun, color: "text-sky-400", bg: "bg-sky-50 dark:bg-sky-950/10" },
-];
+type WeatherIcon = "sun" | "cloud-sun" | "moon";
+type ForecastRecord = Omit<ForecastDay, "icon"> & { icon: WeatherIcon };
+type HourlyRecord = Omit<HourlyForecast, "icon"> & { icon: WeatherIcon };
 
-export const hourlyForecast: HourlyForecast[] = [
-  { time: "Now", temp: "19°", icon: Moon, color: "text-indigo-400", hum: "32%", wind: "NE 5 kmph" },
-  { time: "2 a.m.", temp: "18°", icon: CloudSun, color: "text-sky-400", hum: "35%", wind: "NE 6 kmph" },
-  { time: "3 a.m.", temp: "16°", icon: CloudSun, color: "text-sky-400", hum: "37%", wind: "NE 8 kmph" },
-  { time: "4 a.m.", temp: "13°", icon: Moon, color: "text-indigo-400", hum: "38%", wind: "NE 7 kmph" },
-];
+const ICONS: Record<WeatherIcon, ForecastDay["icon"]> = {
+  sun: Sun,
+  "cloud-sun": CloudSun,
+  moon: Moon,
+};
 
-/** App-based rides availability gauges (dashboard). */
-export const ridesGauges: GaugeDatum[] = [
-  { pct: 43, label: "Available", stroke: "#10B981" },
-  { pct: 71, label: "Limited", stroke: "#F59E0B" },
-  { pct: 86, label: "Busy", stroke: "#EF4444" },
-];
+const withIcon = <T extends { icon: WeatherIcon }>(record: T) => {
+  const { icon, ...rest } = record;
+  return { ...rest, icon: ICONS[icon] };
+};
+
+export const forecastDays: ForecastDay[] = (
+  demoData.weather.forecastDays as ForecastRecord[]
+).map(withIcon);
+
+export const hourlyForecast: HourlyForecast[] = (
+  demoData.weather.hourlyForecast as HourlyRecord[]
+).map(withIcon);
+
+/** App-based rides availability gauges (dashboard demo values). */
+export const ridesGauges: GaugeDatum[] = demoData.weather.ridesGauges as GaugeDatum[];

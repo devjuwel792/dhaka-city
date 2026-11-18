@@ -1,4 +1,5 @@
 import type { CityNotification } from "@/types";
+import demoData from "@/data/demo-data.json";
 import { STORAGE_PREFIX } from "./storage";
 
 export const NOTIFICATIONS_KEY = `${STORAGE_PREFIX}notifications`;
@@ -16,35 +17,9 @@ let snapshot: StoredNotification[] | null = null;
 function seedNotifications(): StoredNotification[] {
   const now = Date.now();
   const minute = 60 * 1000;
-  const base: Array<Omit<StoredNotification, "createdAt"> & { minutesAgo: number }> = [
-    {
-      id: 1,
-      title: "Demo emergency broadcast",
-      text: "Sample waterlogging hazard near Dhanmondi 27. Demo alert — no live emergency feed.",
-      time: "10m ago",
-      level: "high",
-      read: false,
-      minutesAgo: 10,
-    },
-    {
-      id: 2,
-      title: "Demo transit notice",
-      text: "Sample metro service notice towards Motijheel. Demo status only.",
-      time: "25m ago",
-      level: "med",
-      read: false,
-      minutesAgo: 25,
-    },
-    {
-      id: 3,
-      title: "Demo air-quality reminder",
-      text: "Sample reminder based on typical winter AQI. Not a live health advisory.",
-      time: "1h ago",
-      level: "med",
-      read: false,
-      minutesAgo: 60,
-    },
-  ];
+  const base = demoData.notificationSeeds as Array<
+    Omit<StoredNotification, "createdAt"> & { minutesAgo: number }
+  >;
 
   return base.map(({ minutesAgo, ...item }) => ({
     ...item,

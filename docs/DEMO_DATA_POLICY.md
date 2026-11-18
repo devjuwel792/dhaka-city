@@ -35,7 +35,9 @@ When real data is unavailable, the UI says so. It does not estimate, interpolate
 
 ## Adding demo content
 
-1. Put it in `src/data/` or a clearly named generator.
-2. Never include a real-looking timestamp, publisher or sensor attribution that you cannot verify.
-3. Render a `DEMO` badge and a bilingual note wherever it appears.
+1. Add or edit the sample record in `src/data/demo-data.json` (traffic, transit, cameras, news, emergency, notifications, weather gauges).
+2. Keep the typed wrappers in `src/data/*.ts` — they import the JSON and only add icons/types.
+3. Never include a real-looking timestamp, publisher or sensor attribution that you cannot verify.
+4. Render a `DEMO` badge and a bilingual note wherever it appears.
+5. Run `npm run lint` and `npm run build` after editing the JSON.
 4. Prefer static, explainable samples over random values that change on every render.

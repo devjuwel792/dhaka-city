@@ -1,0 +1,213 @@
+{
+  "weather": {
+    "forecastDays": [
+      { "day": "Fri, 13th", "temp": 28, "icon": "sun", "color": "text-amber-500", "bg": "bg-amber-50 dark:bg-amber-950/10" },
+      { "day": "Sat, 14th", "temp": 27, "icon": "sun", "color": "text-amber-500", "bg": "bg-amber-50 dark:bg-amber-950/10" },
+      { "day": "Sun, 15th", "temp": 26, "icon": "cloud-sun", "color": "text-sky-400", "bg": "bg-sky-50 dark:bg-sky-950/10" },
+      { "day": "Mon, 16th", "temp": 23, "icon": "cloud-sun", "color": "text-sky-400", "bg": "bg-sky-50 dark:bg-sky-950/10" },
+      { "day": "Tue, 17th", "temp": 24, "icon": "cloud-sun", "color": "text-sky-400", "bg": "bg-sky-50 dark:bg-sky-950/10" }
+    ],
+    "hourlyForecast": [
+      { "time": "Now", "temp": "19°", "icon": "moon", "color": "text-indigo-400", "hum": "32%", "wind": "NE 5 kmph" },
+      { "time": "2 a.m.", "temp": "18°", "icon": "cloud-sun", "color": "text-sky-400", "hum": "35%", "wind": "NE 6 kmph" },
+      { "time": "3 a.m.", "temp": "16°", "icon": "cloud-sun", "color": "text-sky-400", "hum": "37%", "wind": "NE 8 kmph" },
+      { "time": "4 a.m.", "temp": "13°", "icon": "moon", "color": "text-indigo-400", "hum": "38%", "wind": "NE 7 kmph" }
+    ],
+    "ridesGauges": [
+      { "pct": 43, "label": "Available", "stroke": "#10B981" },
+      { "pct": 71, "label": "Limited", "stroke": "#F59E0B" },
+      { "pct": 86, "label": "Busy", "stroke": "#EF4444" }
+    ]
+  },
+  "traffic": {
+    "zones": [
+      { "id": "mirpur-10", "nameEn": "Mirpur 10 Circle", "nameBn": "মিরপুর ১০ গোলচত্বর", "lat": 23.8069, "lon": 90.3687, "road": "Mirpur Road", "level": "heavy", "speedKph": 12 },
+      { "id": "rokeya-avenue", "nameEn": "Rokeya Avenue", "nameBn": "রোকেয়া অ্যাভিনিউ", "lat": 23.7509, "lon": 90.3828, "road": "Begum Rokeya Avenue", "level": "moderate", "speedKph": 28 },
+      { "id": "dhanmondi-27", "nameEn": "Dhanmondi Road 27", "nameBn": "ধানমন্ডি রোড ২৭", "lat": 23.7465, "lon": 90.3759, "road": "Road 27 (Satmasjid Road)", "level": "fluid", "speedKph": 34 },
+      { "id": "mohakhali-flyover", "nameEn": "Mohakhali Flyover", "nameBn": "মহাখালী ফ্লাইওভার", "lat": 23.7777, "lon": 90.4031, "road": "Kazi Nazrul Islam Avenue", "level": "heavy", "speedKph": 8 },
+      { "id": "farmgate", "nameEn": "Farmgate", "nameBn": "ফার্মগেট", "lat": 23.7583, "lon": 90.3833, "road": "Kazi Nazrul Islam Avenue", "level": "heavy", "speedKph": 10 },
+      { "id": "gulshan-2", "nameEn": "Gulshan 2", "nameBn": "গুলশান ২", "lat": 23.7925, "lon": 90.4152, "road": "Gulshan Avenue", "level": "moderate", "speedKph": 24 },
+      { "id": "motijheel", "nameEn": "Motijheel", "nameBn": "মতিঝিল", "lat": 23.733, "lon": 90.4177, "road": "Outer Circular Road", "level": "moderate", "speedKph": 22 },
+      { "id": "shahbagh", "nameEn": "Shahbagh", "nameBn": "শাহবাগ", "lat": 23.7389, "lon": 90.3958, "road": "Kazi Nazrul Islam Avenue", "level": "fluid", "speedKph": 31 },
+      { "id": "uttara", "nameEn": "Uttara", "nameBn": "উত্তরা", "lat": 23.8607, "lon": 90.3951, "road": "Airport Road", "level": "moderate", "speedKph": 26 },
+      { "id": "savar", "nameEn": "Savar", "nameBn": "সাভার", "lat": 23.8354, "lon": 90.267, "road": "Dhaka–Aricha Highway", "level": "fluid", "speedKph": 42 },
+      { "id": "narayanganj", "nameEn": "Narayanganj", "nameBn": "নারায়ণগঞ্জ", "lat": 23.6238, "lon": 90.5, "road": "Dhaka–Chittagong Highway", "level": "moderate", "speedKph": 20 }
+    ],
+    "incidents": [
+      { "id": "inc-1", "zone": "Mirpur 10 Circle", "titleEn": "Simulated queue build-up near the roundabout", "titleBn": "গোলচত্বরের কাছে অনুকরণীয় যানজট", "isDemo": true },
+      { "id": "inc-2", "zone": "Mohakhali Flyover", "titleEn": "Simulated slow movement on the flyover approach", "titleBn": "ফ্লাইওভার প্রবেশপথে অনুকরণীয় ধীরগতি", "isDemo": true }
+    ]
+  },
+  "transit": {
+    "metroStations": [
+      { "id": "uttara-north", "name": "Uttara North", "nameBn": "উত্তরা উত্তর", "order": 1 },
+      { "id": "uttara-center", "name": "Uttara Center", "nameBn": "উত্তরা সেন্টার", "order": 2 },
+      { "id": "uttara-south", "name": "Uttara South", "nameBn": "উত্তরা দক্ষিণ", "order": 3 },
+      { "id": "pallabi", "name": "Pallabi", "nameBn": "পল্লবী", "order": 4 },
+      { "id": "mirpur-11", "name": "Mirpur 11", "nameBn": "মিরপুর ১১", "order": 5 },
+      { "id": "mirpur-10", "name": "Mirpur 10", "nameBn": "মিরপুর ১০", "order": 6 },
+      { "id": "kazipara", "name": "Kazipara", "nameBn": "কাজীপাড়া", "order": 7 },
+      { "id": "shewrapara", "name": "Shewrapara", "nameBn": "শেওড়াপাড়া", "order": 8 },
+      { "id": "agargaon", "name": "Agargaon", "nameBn": "আগারগাঁও", "order": 9 },
+      { "id": "bijoy-sarani", "name": "Bijoy Sarani", "nameBn": "বিজয় সরণি", "order": 10 },
+      { "id": "farmgate", "name": "Farmgate", "nameBn": "ফার্মগেট", "order": 11 },
+      { "id": "kawran-bazar", "name": "Kawran Bazar", "nameBn": "কাওরান বাজার", "order": 12 },
+      { "id": "shahbagh", "name": "Shahbagh", "nameBn": "শাহবাগ", "order": 13 },
+      { "id": "dhaka-university", "name": "Dhaka University", "nameBn": "ঢাকা বিশ্ববিদ্যালয়", "order": 14 },
+      { "id": "secretariat", "name": "Secretariat", "nameBn": "সচিবালয়", "order": 15 },
+      { "id": "motijheel", "name": "Motijheel", "nameBn": "মতিঝিল", "order": 16 }
+    ],
+    "alerts": [
+      { "name": "Mirpur 10", "status": "Minor Delays", "color": "orange" },
+      { "name": "Kazipara", "status": "Good Service", "color": "green" },
+      { "name": "Shewrapara", "status": "Major Delays", "color": "red" },
+      { "name": "Agargaon", "status": "Good Service", "color": "green" },
+      { "name": "Farmgate", "status": "Minor Delays", "color": "orange" },
+      { "name": "Motijheel", "status": "Good Service", "color": "green" },
+      { "name": "Dhanmondi", "status": "Major Delays", "color": "red" },
+      { "name": "Gulshan", "status": "Minor Delays", "color": "orange" },
+      { "name": "Banani", "status": "Good Service", "color": "green" },
+      { "name": "Uttara", "status": "Major Delays", "color": "red" },
+      { "name": "Airport Road", "status": "Minor Delays", "color": "orange" },
+      { "name": "Mohakhali", "status": "Major Delays", "color": "red" },
+      { "name": "Dhanmondi 27", "status": "Good Service", "color": "green" },
+      { "name": "Bashundhara R/A", "status": "Major Delays", "color": "red" },
+      { "name": "Baridhara", "status": "Major Delays", "color": "red" },
+      { "name": "Uttara Sector 7", "status": "Minor Delays", "color": "orange" },
+      { "name": "Mirpur DOHS", "status": "Good Service", "color": "green" },
+      { "name": "New Market", "status": "Major Delays", "color": "red" },
+      { "name": "Khilgaon", "status": "Minor Delays", "color": "orange" },
+      { "name": "Tejgaon", "status": "Major Delays", "color": "red" },
+      { "name": "Mohammadpur", "status": "Minor Delays", "color": "orange" },
+      { "name": "Savar", "status": "Good Service", "color": "green" },
+      { "name": "Gazipur", "status": "Major Delays", "color": "red" }
+    ],
+    "busRoutes": [
+      { "name": "Route 18", "status": "Disrupted", "color": "red" },
+      { "name": "Dhanmondi", "status": "Delayed", "color": "orange" },
+      { "name": "Baridhara", "status": "Delayed", "color": "orange" },
+      { "name": "Mirpur 14", "status": "On Time", "color": "green" },
+      { "name": "Gulshan", "status": "Delayed", "color": "orange" },
+      { "name": "Gazipur", "status": "Disrupted", "color": "red" },
+      { "name": "Uttara", "status": "On Time", "color": "green" },
+      { "name": "Mohakhali", "status": "On Time", "color": "green" },
+      { "name": "Savar", "status": "Disrupted", "color": "red" }
+    ]
+  },
+  "cameras": [
+    { "id": "mirpur10", "name": "Mirpur 10 Circle", "live": false, "location": "Mirpur 10, Dhaka", "videoSrc": "/videos/intersection-01.mp4", "poster": "/videos/poster-intersection-01.jpg", "isDemo": true },
+    { "id": "avenue5", "name": "Avenue 5", "live": false, "location": "Mirpur DOHS, Dhaka", "videoSrc": "/videos/street-01.mp4", "poster": "/videos/poster-street-01.jpg", "isDemo": true },
+    { "id": "rokeya", "name": "Begum Rokeya Avenue", "live": false, "location": "Dhanmondi, Dhaka", "videoSrc": "/videos/street-02.mp4", "poster": "/videos/poster-street-02.jpg", "isDemo": true },
+    { "id": "highway", "name": "Dhaka–Aricha Highway", "live": false, "location": "Savar, Dhaka", "videoSrc": "/videos/highway-01.mp4", "poster": "/videos/poster-highway-01.jpg", "isDemo": true },
+    { "id": "gulshan", "name": "Gulshan Avenue", "live": false, "location": "Gulshan 2, Dhaka", "videoSrc": "/videos/street-03.mp4", "poster": "/videos/poster-street-03.jpg", "isDemo": true }
+  ],
+  "news": {
+    "articles": [
+      {
+        "id": 1,
+        "title": "Mirpur 10 hospitals on the frontline",
+        "summary": "Medical teams set up emergency response units as patient counts rise due to seasonal heat and fever cases.",
+        "full": "Dhaka city hospitals in Mirpur 10 are facing a massive surge in admissions due to heat-related illnesses and water-borne viruses. The health department has requested all available medical teams to remain on active duty and set up temporary cooling rooms.",
+        "tag": "Emergency Alert",
+        "image": "linear-gradient(135deg, #f87171, #ef4444)"
+      },
+      {
+        "id": 2,
+        "title": "Protests, rallies held in Mirpur 10",
+        "summary": "Local transport affected as demonstrators gather near the round-about requesting traffic safety infrastructure.",
+        "full": "Major traffic blockages were reported in Mirpur 10 round-about as student unions and local residents held peace rallies demanding safer pedestrian crossings and strict speed limits for local city buses.",
+        "tag": "Road Block",
+        "image": "linear-gradient(135deg, #fbcfe8, #ec4899)"
+      },
+      {
+        "id": 3,
+        "title": "Army, police vehicles torched during clash",
+        "summary": "Security heightened in key areas after overnight incidents involving local vandals near bypass lanes.",
+        "full": "Following late-night clashes between rival activist groups, law enforcement agencies have deployed extra personnel along Rokeya Avenue. Two security vehicles were damaged, and citizens are advised to avoid bypass lanes after 10 PM.",
+        "tag": "Security",
+        "image": "linear-gradient(135deg, #fed7aa, #f97316)"
+      }
+    ],
+    "topics": [
+      { "id": "dhaka", "label": "Dhaka", "labelBn": "ঢাকা", "query": "Dhaka" },
+      { "id": "traffic", "label": "Traffic", "labelBn": "ট্রাফিক", "query": "\"Dhaka traffic\" OR \"Dhaka congestion\" OR \"Dhaka road\"" },
+      { "id": "weather", "label": "Weather", "labelBn": "আবহাওয়া", "query": "\"Dhaka weather\" OR \"Dhaka flood\" OR \"Dhaka rain\"" },
+      { "id": "transport", "label": "Transport", "labelBn": "পরিবহন", "query": "\"Dhaka metro\" OR \"Dhaka bus\" OR \"Dhaka transport\"" },
+      { "id": "bangla", "label": "বাংলা", "labelBn": "বাংলা", "query": "ঢাকা সংবাদ" }
+    ]
+  },
+  "emergency": {
+    "contacts": [
+      {
+        "id": "national-999",
+        "category": "national",
+        "service": "National Emergency Helpline",
+        "serviceBn": "জাতীয় জরুরি সেবা",
+        "number": "999",
+        "desc": "Police, fire and ambulance dispatch nationwide.",
+        "descBn": "সারা দেশে পুলিশ, ফায়ার সার্ভিস ও অ্যাম্বুলেন্স সেবা।",
+        "icon": "phone",
+        "color": "text-red-600 bg-red-50 border-red-200 dark:bg-red-950/20 dark:border-red-900/40",
+        "source": "National Emergency Service"
+      },
+      {
+        "id": "fire-16163",
+        "category": "fire",
+        "service": "Fire Service & Civil Defence",
+        "serviceBn": "ফায়ার সার্ভিস ও সিভিল ডিফেন্স",
+        "number": "16163",
+        "desc": "Fire, rescue and disaster response hotline.",
+        "descBn": "অগ্নিকাণ্ড, উদ্ধার ও দুর্যোগ সহায়তা হটলাইন।",
+        "icon": "fire",
+        "color": "text-orange-600 bg-orange-50 border-orange-200 dark:bg-orange-950/20 dark:border-orange-900/40",
+        "source": "Fire Service and Civil Defence"
+      },
+      {
+        "id": "health-16263",
+        "category": "medical",
+        "service": "Shastho Batayon (Health Helpline)",
+        "serviceBn": "স্বাস্থ্য বাতায়ন",
+        "number": "16263",
+        "desc": "24/7 doctor consultation and medical guidance.",
+        "descBn": "২৪/৭ ডাক্তারি পরামর্শ ও চিকিৎসা সহায়তা।",
+        "icon": "medical",
+        "color": "text-emerald-600 bg-emerald-50 border-emerald-200 dark:bg-emerald-950/20 dark:border-emerald-900/40",
+        "source": "Directorate General of Health Services"
+      },
+      {
+        "id": "wasa-16162",
+        "category": "utility",
+        "service": "Dhaka WASA",
+        "serviceBn": "ঢাকা ওয়াসা",
+        "number": "16162",
+        "desc": "Water supply, waterlogging and pipeline emergencies.",
+        "descBn": "পানি সরবরাহ, জলাবদ্ধতা ও পাইপলাইন সমস্যা।",
+        "icon": "utility",
+        "color": "text-cyan-600 bg-cyan-50 border-cyan-200 dark:bg-cyan-950/20 dark:border-cyan-900/40",
+        "source": "Dhaka Water Supply and Sewerage Authority"
+      },
+      {
+        "id": "dmp-control",
+        "category": "police",
+        "service": "DMP Control Room",
+        "serviceBn": "ডিএমপি কন্ট্রোল রুম",
+        "number": "01713-373100",
+        "desc": "Dhaka Metropolitan Police emergency control room.",
+        "descBn": "ঢাকা মেট্রোপলিটন পুলিশের জরুরি কন্ট্রোল রুম।",
+        "icon": "police",
+        "color": "text-blue-600 bg-blue-50 border-blue-200 dark:bg-blue-950/20 dark:border-blue-900/40",
+        "source": "Dhaka Metropolitan Police"
+      }
+    ]
+  },
+  "notifications": [
+    { "id": 1, "title": "Emergency Broadcast", "text": "Water logging hazard reported in Dhanmondi Sector 27. Seek alternative route.", "time": "10m ago", "level": "high" },
+    { "id": 2, "title": "Transit Alert", "text": "Metro line service disrupted towards Motijheel for maintenance.", "time": "25m ago", "level": "med" },
+    { "id": 3, "title": "Weather Alert", "text": "Air Quality Index exceeds 200 (Unhealthy). Wear masks outdoor.", "time": "1h ago", "level": "med" }
+  ],
+  "notificationSeeds": [
+    { "id": 1, "title": "Demo emergency broadcast", "text": "Sample waterlogging hazard near Dhanmondi 27. Demo alert — no live emergency feed.", "time": "10m ago", "level": "high", "read": false, "minutesAgo": 10 },
+    { "id": 2, "title": "Demo transit notice", "text": "Sample metro service notice towards Motijheel. Demo status only.", "time": "25m ago", "level": "med", "read": false, "minutesAgo": 25 },
+    { "id": 3, "title": "Demo air-quality reminder", "text": "Sample reminder based on typical winter AQI. Not a live health advisory.", "time": "1h ago", "level": "med", "read": false, "minutesAgo": 60 }
+  ]
+}

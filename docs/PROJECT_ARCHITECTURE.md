@@ -27,7 +27,7 @@ types/        shared TypeScript types
 Rules:
 
 - Components never call `fetch` directly; they use hooks/services.
-- Demo data lives in `src/data/` and must be labelled in the UI.
+- Demo data lives in `src/data/demo-data.json` and is re-exported by typed wrappers in `src/data/*.ts`; it must be labelled in the UI.
 - API responses always use the `ApiResponse<T>` envelope from `src/types/api.ts`.
 
 ## Data flow
