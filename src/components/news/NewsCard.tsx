@@ -76,7 +76,7 @@ export function NewsCard({ article, variant = "full", onClick }: NewsCardProps) 
           </p>
         </div>
         <span className="text-[12px] text-emerald-500 font-bold mt-4 md:mt-0">
-          Read full coverage →
+          View demo article →
         </span>
       </div>
     </div>

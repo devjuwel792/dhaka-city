@@ -5,6 +5,7 @@ import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { OfflineBanner } from "@/components/common/OfflineBanner";
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
+import { MobileNav } from "./MobileNav";
 import { DashboardView } from "@/components/dashboard/DashboardView";
 import { WeatherView } from "@/components/weather/WeatherView";
 import { TransitView } from "@/components/transit/TransitView";
@@ -71,7 +72,8 @@ export function AppShell() {
 
         <main id="main-content" tabIndex={-1} className="flex-1 flex flex-col min-w-0 overflow-y-auto">
           <Header />
-          <div className="p-8 flex-1">{renderView(activeTab)}</div>
+          <MobileNav />
+          <div className="p-4 md:p-8 flex-1">{renderView(activeTab)}</div>
         </main>
       </div>
 

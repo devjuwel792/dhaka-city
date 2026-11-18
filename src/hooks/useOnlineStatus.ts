@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 /** Tracks the browser online/offline status. */
 export function useOnlineStatus(): boolean {
   const [online, setOnline] = useState<boolean>(() =>
-    typeof navigator === "undefined" ? true : navigator.onLine,
+    // SSR has no meaningful navigator.onLine; assume online to avoid a flash.
+    typeof navigator === "undefined" || navigator.onLine !== false,
   );
 
   useEffect(() => {

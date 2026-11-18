@@ -7,7 +7,7 @@ import { MapCanvas } from "@/components/map/MapCanvas";
 
 /** Dashboard map widget. Centers on the selected location and shows area markers. */
 export function StreetMapWidget({ className }: { className?: string }) {
-  const { isDark, lang, t, selectedLocation, setShowMapModal } = useApp();
+  const { isDark, lang, t, selectedLocation, setShowMapModal, mapLayer } = useApp();
 
   return (
     <div
@@ -31,6 +31,7 @@ export function StreetMapWidget({ className }: { className?: string }) {
         <MapCanvas
           selectedId={selectedLocation.id}
           lang={lang}
+          activeLayerId={mapLayer}
           className="h-full w-full"
         />
       </div>

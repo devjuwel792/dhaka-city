@@ -1,6 +1,5 @@
 "use client";
 
-import { LogOut } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { primaryNav, secondaryNav } from "@/constants";
 import { cn } from "@/utils/cn";
@@ -33,7 +32,7 @@ export function Sidebar() {
   return (
     <aside
       className={cn(
-        "w-[250px] flex-shrink-0 flex flex-col border-r py-6 z-10 relative",
+        "w-[250px] flex-shrink-0 hidden md:flex flex-col border-r py-6 z-10 relative",
         isDark ? "bg-[#1E1E1E] border-zinc-800" : "bg-white border-gray-200",
       )}
     >
@@ -52,22 +51,6 @@ export function Sidebar() {
 
         {secondaryNav.map(renderItem)}
       </nav>
-
-      <div className="px-4 mt-auto">
-        <div className={cn("mb-4 border-b", isDark ? "border-zinc-800" : "border-gray-100")} />
-        <button
-          onClick={() => alert("Logged out successfully")}
-          className={cn(
-            "w-full flex items-center gap-3 px-4 py-3 rounded-lg text-[15px] font-medium transition-colors",
-            isDark
-              ? "text-gray-400 hover:bg-red-950/20 hover:text-red-400"
-              : "text-gray-600 hover:bg-red-50 hover:text-red-600",
-          )}
-        >
-          <LogOut className="w-5 h-5" />
-          <span>{t.logout}</span>
-        </button>
-      </div>
     </aside>
   );
 }

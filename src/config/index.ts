@@ -3,7 +3,7 @@ export const APP_CONFIG = {
   version: "1.2.0",
   org: "UIUXpert Lab",
   contactEmail: "dhk@citydb.bd",
-  defaultView: "transit" as const,
+  defaultView: "dashboard" as const,
   defaultLocation: "dhaka",
   refreshOptions: [5, 10, 15, 30] as const,
   tempUnits: ["C", "F"] as const,

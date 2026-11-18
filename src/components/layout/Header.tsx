@@ -50,7 +50,7 @@ export function Header() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-20 flex flex-row items-center justify-between px-8 py-4 border-b transition-colors duration-200",
+        "sticky top-0 z-20 flex flex-wrap gap-2 items-center justify-between px-4 md:px-8 py-3 md:py-4 border-b transition-colors duration-200",
         isDark
           ? "bg-[#1A1A1A]/95 border-zinc-800 backdrop-blur-md"
           : "bg-white/95 border-gray-200 backdrop-blur-md",
@@ -58,17 +58,17 @@ export function Header() {
     >
       {/* Time & Date */}
       <div className="flex items-center gap-3">
-        <Clock className={cn("w-8 h-8", isDark ? "text-gray-400" : "text-gray-500")} />
+        <Clock className={cn("w-6 h-6 md:w-8 md:h-8", isDark ? "text-gray-400" : "text-gray-500")} />
         <div>
-          <h2 className="text-xl font-bold tracking-tight">{clock.time}</h2>
-          <p className={cn("text-[12px] font-medium", isDark ? "text-gray-500" : "text-gray-400")}>
+          <h2 className="text-lg md:text-xl font-bold tracking-tight">{clock.time}</h2>
+          <p className={cn("hidden sm:block text-[12px] font-medium", isDark ? "text-gray-500" : "text-gray-400")}>
             {clock.date}
           </p>
         </div>
       </div>
 
       {/* Quick controls */}
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-2 md:gap-3">
         {/* Location selector */}
         <div ref={locationRef} className="relative location-selector">
           <button
